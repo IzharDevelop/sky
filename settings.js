@@ -4,7 +4,7 @@ const chalk = require('chalk');
 //~~~~~~~~~~~~< GLOBAL SETTINGS >~~~~~~~~~~~~\\
 
 global.owner = ['6287872363060'] //['628','628'] 2 owner atau lebih
-global.number_bot = '6281770764574' // untuk nomor botnya isi sesuai format. contoh '62812345xxxx'
+global.number_bot = '6282191541450' // untuk nomor botnya isi sesuai format. contoh '62812345xxxx'
 global.author = 'developing debug' // nama owner
 global.botname = 'debug bot' // nama bot
 global.packname = 'Bot WhatsApp' // nama pack sticker
@@ -27,6 +27,17 @@ global.fake = {
 	docs: fs.readFileSync('./src/media/fake.pdf'),
 	listfakedocs: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/pdf'],
 }
+
+//------------- jadibotv1 settings --------------\\
+global.domain = 'https://n.izhar.my.id';
+global.apikey = "ptla_P8nes4Pw4vefLUKOj5JjKk263LeS0nxDuUcbsG7FHJW";
+global.capikey = "ptlc_lAe2I1r3SyPh5q9lyYlOyvEGAYwMWFC7ntpydQD2xDo";
+global.eggsnya = "16"; // id eggs yang dipakai
+global.location = "1"; // id location
+global.thumb = 'https://izharelop.github.io/database/property/img/logo_inv.jpg' // THUMBAIL DARI PANEL
+global.nodejs = "ghcr.io/parkervcp/yolks:nodejs_24";
+global.excludedServerIdsPrivate = ["1"]; // Ganti dengan ID server owner
+//--------------------------------------------------------------------------------------------------------
 
 global.my = {
 	yt: 'https://youtube.com/c/',
@@ -71,8 +82,8 @@ global.APIKeys = {
 
 // Lainnya
 
-global.badWords = ['tolol','goblok','asu','pantek','kampret','ngentot','jancok','kontol','memek','lonte']
-global.chatLength = 1000
+global.badWords = ['tolol','goblok','asu','pantek','kampret','ngentot','jancok','kontol','memek','lonte','jembut']
+global.chatLength = 99999
 
 //~~~~~~~~~~~~~~~< PROCESS >~~~~~~~~~~~~~~~\\
 

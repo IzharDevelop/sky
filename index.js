@@ -62,7 +62,7 @@ server.listen(PORT, () => {
 	console.log('App listened on port', PORT);
 });
 
-async function startNazeBot() {
+async function startzharBot() {
 	const { state, saveCreds } = await useMultiFileAuthState('session');
 	const { version, isLatest } = await fetchLatestBaileysVersion();
 	const level = pino({ level: 'silent' });
@@ -126,7 +126,7 @@ async function startNazeBot() {
 		}
 	}
 	
-	const naze = WAConnection({
+	const zhar = WAConnection({
 		logger: level,
 		getMessage,
 		syncFullHistory: true,
@@ -155,7 +155,7 @@ async function startNazeBot() {
 		},
 	})
 	
-	if (pairingCode && !phoneNumber && !naze.authState.creds.registered) {
+	if (pairingCode && !phoneNumber && !zhar.authState.creds.registered) {
 		async function getPhoneNumber() {
 			phoneNumber = global.number_bot ? global.number_bot : process.env.BOT_NUMBER || await question('Please type your WhatsApp number : ');
 			phoneNumber = phoneNumber.replace(/[^0-9]/g, '')
@@ -172,18 +172,18 @@ async function startNazeBot() {
 		})()
 	}
 	
-	await Solving(naze, store)
+	await Solving(zhar, store)
 	
-	naze.ev.on('creds.update', saveCreds)
+	zhar.ev.on('creds.update', saveCreds)
 	
-	naze.ev.on('connection.update', async (update) => {
+	zhar.ev.on('connection.update', async (update) => {
 		const { qr, connection, lastDisconnect, isNewLogin, receivedPendingNotifications } = update
-		if (!naze.authState.creds.registered) console.log('Connection: ', connection || false);
-		if ((connection === 'connecting' || !!qr) && pairingCode && phoneNumber && !naze.authState.creds.registered && !pairingStarted) {
+		if (!zhar.authState.creds.registered) console.log('Connection: ', connection || false);
+		if ((connection === 'connecting' || !!qr) && pairingCode && phoneNumber && !zhar.authState.creds.registered && !pairingStarted) {
 			setTimeout(async () => {
 				pairingStarted = true;
 				console.log('Requesting Pairing Code...')
-				let code = await naze.requestPairingCode(phoneNumber,'QQQQQQQQ');
+				let code = await zhar.requestPairingCode(phoneNumber,'QQQQQQQQ');
 				console.log(chalk.blue('Your Pairing Code :'), chalk.green(code), '\n', chalk.yellow('Expires in 15 second'));
 			}, 3000)
 		}
@@ -191,19 +191,19 @@ async function startNazeBot() {
 			const reason = new Boom(lastDisconnect?.error)?.output.statusCode
 			if (reason === DisconnectReason.connectionLost) {
 				console.log('Connection to Server Lost, Attempting to Reconnect...');
-				startNazeBot()
+				startzharBot()
 			} else if (reason === DisconnectReason.connectionClosed) {
 				console.log('Connection closed, Attempting to Reconnect...');
-				startNazeBot()
+				startzharBot()
 			} else if (reason === DisconnectReason.restartRequired) {
 				console.log('Restart Required...');
-				startNazeBot()
+				startzharBot()
 			} else if (reason === DisconnectReason.timedOut) {
 				console.log('Connection Timed Out, Attempting to Reconnect...');
-				startNazeBot()
+				startzharBot()
 			} else if (reason === DisconnectReason.badSession) {
 				console.log('Delete Session and Scan again...');
-				startNazeBot()
+				startzharBot()
 			} else if (reason === DisconnectReason.connectionReplaced) {
 				console.log('Close current Session first...');
 			} else if (reason === DisconnectReason.loggedOut) {
@@ -219,15 +219,15 @@ async function startNazeBot() {
 				exec('rm -rf ./session/*')
 				process.exit(0)
 			} else {
-				naze.end(`Unknown DisconnectReason : ${reason}|${connection}`)
+				zhar.end(`Unknown DisconnectReason : ${reason}|${connection}`)
 			}
 		}
 		if (connection == 'open') {
-			console.log('Connected to : ' + JSON.stringify(naze.user, null, 2));
-			let botNumber = await naze.decodeJid(naze.user.id);
+			console.log('Connected to : ' + JSON.stringify(zhar.user, null, 2));
+			let botNumber = await zhar.decodeJid(zhar.user.id);
 			if (global.db?.set[botNumber] && !global.db?.set[botNumber]?.join) {
 				if (my.ch.length > 0 && my.ch.includes('@newsletter')) {
-					if (my.ch) await naze.newsletterMsg(my.ch, { type: 'follow' }).catch(e => {})
+					if (my.ch) await zhar.newsletterMsg(my.ch, { type: 'follow' }).catch(e => {})
 					db.set[botNumber].join = true
 				}
 			}
@@ -242,16 +242,16 @@ async function startNazeBot() {
 		if (isNewLogin) console.log(chalk.green('New device login detected...'))
 		if (receivedPendingNotifications == 'true') {
 			console.log('Please wait About 1 Minute...')
-			naze.ev.flush()
+			zhar.ev.flush()
 		}
 	});
 	
-	naze.ev.on('contacts.update', (update) => {
+	zhar.ev.on('contacts.update', (update) => {
 		for (let contact of update) {
 			let trueJid;
 			if (!trueJid) continue;
 			if (contact.id.endsWith('@lid')) {
-				trueJid = naze.findJidByLid(contact.id, store);
+				trueJid = zhar.findJidByLid(contact.id, store);
 			} else {
 				trueJid = jidNormalizedUser(contact.id);
 			}
@@ -266,28 +266,28 @@ async function startNazeBot() {
 		}
 	});
 	
-	naze.ev.on('call', async (call) => {
-		let botNumber = await naze.decodeJid(naze.user.id);
+	zhar.ev.on('call', async (call) => {
+		let botNumber = await zhar.decodeJid(zhar.user.id);
 		if (global.db?.set[botNumber]?.anticall) {
 			for (let id of call) {
 				if (id.status === 'offer') {
-					let msg = await naze.sendMessage(id.from, { text: `Saat Ini, Kami Tidak Dapat Menerima Panggilan ${id.isVideo ? 'Video' : 'Suara'}.\nJika @${id.from.split('@')[0]} Memerlukan Bantuan, Silakan Hubungi Owner :)`, mentions: [id.from]});
-					await naze.sendContact(id.from, global.owner, msg);
-					await naze.rejectCall(id.id, id.from)
+					let msg = await zhar.sendMessage(id.from, { text: `Saat Ini, Kami Tidak Dapat Menerima Panggilan ${id.isVideo ? 'Video' : 'Suara'}.\nJika @${id.from.split('@')[0]} Memerlukan Bantuan, Silakan Hubungi Owner :)`, mentions: [id.from]});
+					await zhar.sendContact(id.from, global.owner, msg);
+					await zhar.rejectCall(id.id, id.from)
 				}
 			}
 		}
 	});
 	
-	naze.ev.on('messages.upsert', async (message) => {
-		await MessagesUpsert(naze, message, store);
+	zhar.ev.on('messages.upsert', async (message) => {
+		await MessagesUpsert(zhar, message, store);
 	});
 	
-	naze.ev.on('group-participants.update', async (update) => {
-		await GroupParticipantsUpdate(naze, update, store);
+	zhar.ev.on('group-participants.update', async (update) => {
+		await GroupParticipantsUpdate(zhar, update, store);
 	});
 	
-	naze.ev.on('groups.update', (update) => {
+	zhar.ev.on('groups.update', (update) => {
 		for (const n of update) {
 			if (store.groupMetadata[n.id]) {
 				Object.assign(store.groupMetadata[n.id], n);
@@ -295,19 +295,19 @@ async function startNazeBot() {
 		}
 	});
 	
-	naze.ev.on('presence.update', ({ id, presences: update }) => {
+	zhar.ev.on('presence.update', ({ id, presences: update }) => {
 		store.presences[id] = store.presences?.[id] || {};
 		Object.assign(store.presences[id], update);
 	});
 	
 	setInterval(async () => {
-		if (naze?.user?.id) await naze.sendPresenceUpdate('available', naze.decodeJid(naze.user.id)).catch(e => {})
+		if (zhar?.user?.id) await zhar.sendPresenceUpdate('available', zhar.decodeJid(zhar.user.id)).catch(e => {})
 	}, 10 * 60 * 1000);
 
-	return naze
+	return zhar
 }
 
-startNazeBot()
+startzharBot()
 
 // Process Exit
 const cleanup = async (signal) => {
