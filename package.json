@@ -1,12 +1,12 @@
 {
-  "name": "hitori",
+  "name": "dev",
   "version": "1.0.8",
   "description": "Bot WhatsApp Using Lib Baileys Multi Device",
   "main": "start.js",
   "type": "commonjs",
   "scripts": {
     "start": "node start.js",
-    "dev": "nodemon index.js",
+    "dev": "pm2 start index.js --watch --ignore-watch='node_modules session database logs'",
     "debug": "DEBUG=* node start.js"
   },
   "keywords": [
@@ -15,7 +15,7 @@
     "bot-wa",
     "multi-device"
   ],
-  "author": "Nazedev",
+  "author": "izhardev",
   "license": "MIT",
   "directories": {
     "lib": "lib",
