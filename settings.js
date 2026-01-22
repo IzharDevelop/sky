@@ -3,8 +3,8 @@ const chalk = require('chalk');
 
 //~~~~~~~~~~~~< GLOBAL SETTINGS >~~~~~~~~~~~~\\
 
-global.owner = ['6287872363060'] //['628','628'] 2 owner atau lebih
-global.number_bot = '6282191541450' // untuk nomor botnya isi sesuai format. contoh '62812345xxxx'
+global.owner = ['6285852536578'] //['628','628'] 2 owner atau lebih
+global.number_bot = '6281263389429' // untuk nomor botnya isi sesuai format. contoh '62812345xxxx'
 global.author = 'developing debug' // nama owner
 global.botname = 'debug bot' // nama bot
 global.packname = 'Bot WhatsApp' // nama pack sticker
@@ -17,7 +17,7 @@ global.packname = 'Bot WhatsApp' // nama pack sticker
 */
 global.listprefix = ['+','!','.']
 global.listv = ['•','●','■','✿','▲','➩','➢','➣','➤','✦','✧','△','❀','○','□','♤','♡','◇','♧','々','〆']
-global.tempatDB = 'mongodb+srv://develop:Abul~Basar132@cluster0.58zkxb8.mongodb.net/?appName=Cluster0' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
+global.tempatDB = 'database.json' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
 global.tempatStore = 'baileys_store.json' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
 global.pairing_code = true
 global.fake = {
