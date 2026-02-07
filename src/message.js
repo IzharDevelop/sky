@@ -7,17 +7,18 @@ const chalk = require('chalk');
 const crypto = require('crypto');
 const FileType = require('file-type');
 const PhoneNumber = require('awesome-phonenumber');
+const { sendInteractiveMessage } = require('@ryuu-reinzz/button-helper');
 
 const { checkStatus } = require('./database');
 const { imageToWebp, videoToWebp, writeExif, gifToWebp } = require('../lib/exif');
 const { isUrl, getGroupAdmins, generateMessageTag, getBuffer, getSizeMedia, fetchJson, sleep, getTypeUrlMedia } = require('../lib/function');
 const { jidNormalizedUser, proto, getBinaryNodeChildren, getBinaryNodeChildString, getBinaryNodeChild, generateMessageIDV2, jidEncode, encodeSignedDeviceIdentity, generateWAMessageContent, generateForwardMessageContent, prepareWAMessageMedia, delay, areJidsSameUser, extractMessageContent, generateMessageID, downloadContentFromMessage, generateWAMessageFromContent, jidDecode, generateWAMessage, toBuffer, getContentType, WAMessageStubType, getDevice } = require('baileys');
+
 /*
 	* Create By INV_TECH
 	* Follow https://github.com/Izharelop
+    * Fixed by Gemini for Interactive Message Support
 */
-
-
 
 async function GroupUpdate(zhar, m, store) {
 	if (!m.messageStubType || !m.isGroup) return
@@ -55,12 +56,6 @@ async function GroupUpdate(zhar, m, store) {
 				const key = metadata.addressingMode === 'lid' ? jidNormalizedUser(p.lid) : jidNormalizedUser(p.id)
 				return key !== normalizedTarget
 			});
-		} else {
-			console.log({
-				messageStubType: m.messageStubType,
-				messageStubParameters: m.messageStubParameters,
-				type: WAMessageStubType[m.messageStubType],
-			})
 		}
 	}
 }
@@ -275,7 +270,7 @@ async function MessagesUpsert(zhar, message, store) {
 			if (/protocolMessage/i.test(type)) await zhar.sendFromOwner(global.db?.set?.[botNumber]?.owner?.map(x => x.id) || global.owner, 'Status dari @' + msg.key.participant.split('@')[0] + ' Telah dihapus', msg, { mentions: [msg.key.participant] });
 			if (/(audioMessage|imageMessage|videoMessage|extendedTextMessage)/i.test(type)) {
 				let keke = (type == 'extendedTextMessage') ? `Story Teks Berisi : ${msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : ''}` : (type == 'imageMessage') ? `Story Gambar ${msg.message.imageMessage.caption ? 'dengan Caption : ' + msg.message.imageMessage.caption : ''}` : (type == 'videoMessage') ? `Story Video ${msg.message.videoMessage.caption ? 'dengan Caption : ' + msg.message.videoMessage.caption : ''}` : (type == 'audioMessage') ? 'Story Audio' : '\nTidak diketahui cek saja langsung'
-				await zhar.sendFromOwner(global.db?.set?.[botNumber]?.owner?.map(x => x.id) || global.owner, `Melihat story dari @${msg.key.participant.split('@')[0]}\n${keke}`, msg, { mentions: [msg.key.participant] });
+				await zhar.sendFromOwner(global.db?.set?.[botNumber]?.owner?.map(x => x.id) || global.sw, `Melihat story dari @${msg.key.participant.split('@')[0]}\n${keke}`, msg, { mentions: [msg.key.participant] });
 			}
 		}
 	} catch (e) {
@@ -296,7 +291,6 @@ async function Solving(zhar, store) {
     zhar.resolveLid = async (jid) => {
         if (jid.endsWith('@lid')) return jid.split('@')[0];
         if (jid.endsWith('@s.whatsapp.net')) {
-            // Mengambil pemetaan LID dari repositori sinyal Baileys
             const resolved = await zhar.signalRepository.lidMapping.getLIDForPN(jid);
             if (resolved) {
                 return typeof resolved === "string" && resolved.endsWith("@lid")
@@ -312,9 +306,8 @@ async function Solving(zhar, store) {
 
     zhar.getGroupMetadataOptimized = async (jid) => {
         const now = Date.now();
-        const cacheTTL = 10 * 60 * 1000; // Cache berlaku 10 menit
+        const cacheTTL = 10 * 60 * 1000; 
 
-        // Cek apakah metadata ada di cache dan belum kadaluarsa
         if (global.groupMetaCache.has(jid)) {
             const cached = global.groupMetaCache.get(jid);
             if (now - cached.timestamp < cacheTTL) {
@@ -323,21 +316,18 @@ async function Solving(zhar, store) {
         }
 
         try {
-            // Jika tidak ada di cache, ambil langsung dari server
             const metadata = await zhar.groupMetadata(jid);
             global.groupMetaCache.set(jid, {
                 data: metadata,
                 timestamp: now
             });
-            // Update store juga agar sinkron
             if (store.groupMetadata) store.groupMetadata[jid] = metadata;
             return metadata;
         } catch (e) {
-            // Fallback ke store jika gagal fetch server
             return store.groupMetadata?.[jid] || {};
         }
     }
-	// -----------------------------------------------
+	
 	zhar.serializeM = (m) => MessagesUpsert(zhar, m, store)
 	
 	zhar.decodeJid = (jid) => {
@@ -376,7 +366,7 @@ async function Solving(zhar, store) {
 		for (let i of kon) {
 			list.push({
 				displayName: await zhar.getName(i + '@s.whatsapp.net'),
-				vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await zhar.getName(i + '@s.whatsapp.net')}\nFN:${await zhar.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.ADR:;;Indonesia;;;;\nitem2.X-ABLabel:Region\nEND:VCARD` //vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await zhar.getName(i + '@s.whatsapp.net')}\nFN:${await zhar.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.EMAIL;type=INTERNET:whatsapp@gmail.com\nitem2.X-ABLabel:Email\nitem3.URL:https://instagram.com/zhar_dev\nitem3.X-ABLabel:Instagram\nitem4.ADR:;;Indonesia;;;;\nitem4.X-ABLabel:Region\nEND:VCARD`
+				vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await zhar.getName(i + '@s.whatsapp.net')}\nFN:${await zhar.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.ADR:;;Indonesia;;;;\nitem2.X-ABLabel:Region\nEND:VCARD`
 			})
 		}
 		zhar.sendMessage(jid, { contacts: { displayName: `${list.length} Kontak`, contacts: list }, ...opts }, { quoted, ephemeralExpiration: quoted?.expiration || quoted?.metadata?.ephemeralDuration || store?.messages[jid]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 });
@@ -453,7 +443,6 @@ async function Solving(zhar, store) {
 			}))
 		};
 	}
-	
 	
 	zhar.groupMetadata = async (jid) => {
 		const result = await zhar.query({
@@ -540,45 +529,52 @@ async function Solving(zhar, store) {
 		return invite
 	}
 	
+    // --- FIX TypeError: jid is not iterable ---
 	zhar.sendFromOwner = async (jid, text, quoted, options = {}) => {
-		for (const a of jid) {
+        const targets = Array.isArray(jid) ? jid : [jid]; // Pastikan jid berbentuk Array
+		for (const a of targets) {
+            if (!a) continue; // Skip jika undefined
 			await zhar.sendMessage(a.replace(/[^0-9]/g, '') + '@s.whatsapp.net', { text, ...options }, { quoted, ephemeralExpiration: quoted?.expiration || quoted?.metadata?.ephemeralDuration || store?.messages[jid]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 })
 		}
 	}
 	
 	zhar.sendText = async (jid, text, quoted, options = {}) => zhar.sendMessage(jid, { text: text, mentions: [...text.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net'), ...options }, { quoted, ephemeralExpiration: quoted?.expiration || quoted?.metadata?.ephemeralDuration || store?.messages[jid]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 })
     
-    // --- FITUR SW GC (VERSI FIX V2) ---
+    // --- FIX & IMPLEMENTASI INTERAKTIF MESSAGE (BUTTON/LIST) ---
+	
+    zhar.sendButtonMsg = async (jid, content = {}, options = {}) => {
+		const payload = {
+            // Mapping properti agar sesuai dengan kebutuhan helper
+            // 'text' adalah wajib, jadi kita ambil dari beberapa kemungkinan
+			text: content.text || content.caption || content.body || ' ',
+			footer: content.footer || '',
+			title: content.title || content.header || '',
+			subtitle: content.subtitle || '',
+			...content, 
+			interactiveButtons: content.buttons || []
+		};
+		return await sendInteractiveMessage(zhar, jid, payload, options);
+	}
+
+    // Untuk List Message, kita juga gunakan helper yang sama karena dia bisa handle single_select
+    zhar.sendListMsg = async (jid, content = {}, options = {}) => {
+        return zhar.sendButtonMsg(jid, content, options);
+    }
+
+    // --- SW GC V2 ---
     zhar.sendGroupStatus = async (jid, content, options = {}) => {
         const { generateWAMessageContent, generateWAMessageFromContent } = require('baileys');
-        
-        // 1. Siapkan konten (media/teks)
         let media = await generateWAMessageContent(content, { upload: zhar.waUploadToServer });
-        
-        // 2. Buat messageSecret (Kunci agar status valid & muncul)
-        // Kita gunakan crypto bawaan Node.js yang sudah ada di import
         const messageSecret = require('crypto').randomBytes(32);
-
-        // 3. Bungkus dengan struktur groupStatusMessageV2
         const msg = await generateWAMessageFromContent(jid, {
-            messageContextInfo: {
-                messageSecret: messageSecret
-            },
+            messageContextInfo: { messageSecret: messageSecret },
             groupStatusMessageV2: {
-                message: {
-                    ...media,
-                    messageContextInfo: {
-                        messageSecret: messageSecret
-                    }
-                }
+                message: { ...media, messageContextInfo: { messageSecret: messageSecret } }
             }
         }, options);
-        
-        // 4. Kirim
         await zhar.relayMessage(jid, msg.message, { messageId: msg.key.id });
         return msg;
     }
-    // ----------------------------------
 	
 	zhar.sendAsSticker = async (jid, path, quoted, options = {}) => {
 		const buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0);
@@ -684,206 +680,25 @@ async function Solving(zhar, store) {
 		return medias;
 	}
 	
-	zhar.sendListMsg = async (jid, content = {}, options = {}) => {
-		const { text, caption, footer = '', title, subtitle, ai, contextInfo = {}, buttons = [], mentions = [], ...media } = content;
-		const msg = await generateWAMessageFromContent(jid, {
-			viewOnceMessage: {
-				message: {
-					messageContextInfo: {
-						deviceListMetadata: {},
-						deviceListMetadataVersion: 2,
-					},
-					interactiveMessage: proto.Message.InteractiveMessage.create({
-						body: proto.Message.InteractiveMessage.Body.create({ text: text || caption || '' }),
-						footer: proto.Message.InteractiveMessage.Footer.create({ text: footer }),
-						header: proto.Message.InteractiveMessage.Header.fromObject({
-							title,
-							subtitle,
-							hasMediaAttachment: Object.keys(media).length > 0,
-							...(media && typeof media === 'object' && Object.keys(media).length > 0 ? await generateWAMessageContent(media, {
-								upload: zhar.waUploadToServer
-							}) : {})
-						}),
-						nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-							buttons: buttons.map(a => {
-								return {
-									name: a.name,
-									buttonParamsJson: JSON.stringify(a.buttonParamsJson ? (typeof a.buttonParamsJson === 'string' ? JSON.parse(a.buttonParamsJson) : a.buttonParamsJson) : '')
-								}
-							})
-						}),
-						contextInfo: {
-							...contextInfo,
-							...options.contextInfo,
-							mentionedJid: options.mentions || mentions,
-							...(options.quoted ? {
-								stanzaId: options.quoted.key.id,
-								remoteJid: options.quoted.key.remoteJid,
-								participant: options.quoted.key.participant || options.quoted.key.remoteJid,
-								fromMe: options.quoted.key.fromMe,
-								quotedMessage: options.quoted.message
-							} : {})
-						}
-					})
-				}
-			}
-		}, {});
-		const hasil = await zhar.relayMessage(msg.key.remoteJid, msg.message, {
-			messageId: msg.key.id,
-			additionalNodes: [{
-				tag: 'biz',
-				attrs: {},
-				content: [{
-					tag: 'interactive',
-					attrs: {
-						type: 'native_flow',
-						v: '1'
-					},
-					content: [{
-						tag: 'native_flow',
-						attrs: {
-							name: 'quick_reply'
-						}
-					}]
-				}]
-			}, ...(ai ? [{ attrs: { biz_bot: '1' }, tag: 'bot' }] : [])]
-		})
-		return hasil
-	}
-	
-	zhar.sendButtonMsg = async (jid, content = {}, options = {}) => {
-		const { text, caption, footer = '', headerType = 1, ai, contextInfo = {}, buttons = [], mentions = [], ...media } = content;
-		const msg = await generateWAMessageFromContent(jid, {
-			viewOnceMessage: {
-				message: {
-					messageContextInfo: {
-						deviceListMetadata: {},
-						deviceListMetadataVersion: 2,
-					},
-					buttonsMessage: {
-						...(media && typeof media === 'object' && Object.keys(media).length > 0 ? await generateWAMessageContent(media, {
-							upload: zhar.waUploadToServer
-						}) : {}),
-						contentText: text || caption || '',
-						footerText: footer,
-						buttons,
-						headerType: media && Object.keys(media).length > 0 ? Math.max(...Object.keys(media).map((a) => ({ document: 3, image: 4, video: 5, location: 6 })[a] || headerType)) : headerType,
-						contextInfo: {
-							...contextInfo,
-							...options.contextInfo,
-							mentionedJid: options.mentions || mentions,
-							...(options.quoted ? {
-								stanzaId: options.quoted.key.id,
-								remoteJid: options.quoted.key.remoteJid,
-								participant: options.quoted.key.participant || options.quoted.key.remoteJid,
-								fromMe: options.quoted.key.fromMe,
-								quotedMessage: options.quoted.message
-							} : {})
-						}
-					}
-				}
-			}
-		}, {});
-		const hasil = await zhar.relayMessage(msg.key.remoteJid, msg.message, {
-			messageId: msg.key.id,
-			additionalNodes: [{
-				tag: 'biz',
-				attrs: {},
-				content: [{
-					tag: 'interactive',
-					attrs: {
-						type: 'native_flow',
-						v: '1'
-					},
-					content: [{
-						tag: 'native_flow',
-						attrs: {
-							name: 'quick_reply'
-						}
-					}]
-				}]
-			}, ...(ai ? [{ attrs: { biz_bot: '1' }, tag: 'bot' }] : [])]
-		})
-		return hasil
-	}
-	
-	zhar.newsletterMsg = async (key, content = {}, timeout = 5000) => {
-		const { type: rawType = 'INFO', name, description = '', picture = null, react, id, newsletter_id = key, ...media } = content;
-		const type = rawType.toUpperCase();
-		if (react) {
-			if (!(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) throw [{ message: 'Use Id Newsletter', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
-			if (!id) throw [{ message: 'Use Id Newsletter Message', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
-			const hasil = await zhar.query({
-				tag: 'message',
-				attrs: {
-					to: key,
-					type: 'reaction',
-					'server_id': id,
-					id: generateMessageID()
-				},
-				content: [{
-					tag: 'reaction',
-					attrs: {
-						code: react
-					}
-				}]
-			});
-			return hasil
-		} else if (media && typeof media === 'object' && Object.keys(media).length > 0) {
-			const msg = await generateWAMessageContent(media, { upload: zhar.waUploadToServer });
-			const anu = await zhar.query({
-				tag: 'message',
-				attrs: { to: newsletter_id, type: 'text' in media ? 'text' : 'media' },
-				content: [{
-					tag: 'plaintext',
-					attrs: /image|video|audio|sticker|poll/.test(Object.keys(media).join('|')) ? { mediatype: Object.keys(media).find(key => ['image', 'video', 'audio', 'sticker','poll'].includes(key)) || null } : {},
-					content: proto.Message.encode(msg).finish()
-				}]
-			})
-			return anu
-		} else {
-			if ((/(FOLLOW|UNFOLLOW|DELETE)/.test(type)) && !(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) return [{ message: 'Use Id Newsletter', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
-			const _query = await zhar.query({
-				tag: 'iq',
-				attrs: {
-					to: 's.whatsapp.net',
-					type: 'get',
-					xmlns: 'w:mex'
-				},
-				content: [{
-					tag: 'query',
-					attrs: {
-						query_id: type == 'FOLLOW' ? '9926858900719341' : type == 'UNFOLLOW' ? '7238632346214362' : type == 'CREATE' ? '6234210096708695' : type == 'DELETE' ? '8316537688363079' : '6563316087068696'
-					},
-					content: new TextEncoder().encode(JSON.stringify({
-						variables: /(FOLLOW|UNFOLLOW|DELETE)/.test(type) ? { newsletter_id } : type == 'CREATE' ? { newsletter_input: { name, description, picture }} : { fetch_creation_time: true, fetch_full_image: true, fetch_viewer_metadata: false, input: { key, type: (newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id)) ? 'JID' : 'INVITE' }}
-					}))
-				}]
-			}, timeout);
-			const res = JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_join_v2 || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_leave_v2 || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_create || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_delete_v2 || JSON.parse(_query.content[0].content)?.errors || JSON.parse(_query.content[0].content)
-			res.thread_metadata ? (res.thread_metadata.host = 'https://mmg.whatsapp.net') : null
-			return res
-		}
-	}
-	
+    // Carousel tetap manual karena formatnya spesifik dan jarang bermasalah jika struktur card benar
 	zhar.sendCarouselMsg = async (jid, body = '', footer = '', cards = [], options = {}) => {
 		async function getImageMsg(url) {
 			const { imageMessage } = await generateWAMessageContent({ image: { url } }, { upload: zhar.waUploadToServer });
 			return imageMessage;
 		}
 		const cardPromises = cards.map(async (a) => {
-			const imageMessage = await getImageMsg(a.url);
+			const imageMessage = await getImageMsg(a.header.imageMessage.imageMessage.url || a.header.imageMessage.url);
 			return {
 				header: {
 					imageMessage: imageMessage,
 					hasMediaAttachment: true
 				},
-				body: { text: a.body },
-				footer: { text: a.footer },
+				body: { text: a.body.text },
+				footer: { text: a.footer.text },
 				nativeFlowMessage: {
-					buttons: a.buttons.map(b => ({
+					buttons: a.nativeFlowMessage.buttons.map(b => ({
 						name: b.name,
-						buttonParamsJson: JSON.stringify(b.buttonParamsJson ? JSON.parse(b.buttonParamsJson) : '')
+						buttonParamsJson: b.buttonParamsJson
 					}))
 				}
 			};
@@ -907,7 +722,7 @@ async function Solving(zhar, store) {
 					})
 				}
 			}
-		}, {});
+		}, options);
 		const hasil = await zhar.relayMessage(msg.key.remoteJid, msg.message, { messageId: msg.key.id });
 		return hasil
 	}
@@ -921,12 +736,6 @@ async function Solving(zhar, store) {
 
 	return zhar
 }
-
-/*
-	* Create By INV_TECH
-	* Follow https://github.com/Izharelop
-*/
-
 
 async function Serialize(zhar, msg, store) {
 	const botLid = zhar.decodeJid(zhar.user.lid);
@@ -942,18 +751,14 @@ async function Serialize(zhar, msg, store) {
 		if (!m.isGroup && m.chat.endsWith('@lid')) m.chat = zhar.findJidByLid(m.chat, store) || m.chat;
 		m.sender = zhar.decodeJid(m.fromMe && zhar.user.id || m.key.participant || m.chat || '')
 		if (m.isGroup) {
-            // Menggunakan metadata teroptimasi daripada fetch berulang kali
             let metadata = await zhar.getGroupMetadataOptimized(m.chat);
-            
             m.metadata = metadata;
             m.metadata.size = (metadata.participants || []).length;
 
-            // Integrasi LID Mapping pada pengirim (jika grup dalam mode LID)
             if (metadata.addressingMode === 'lid') {
                 const participant = metadata.participants.find(a => a.lid === m.sender);
                 m.key.participant = m.sender = participant?.id || m.sender;
                 
-                // Sinkronisasi data kontak LID ke store
                 if (store.contacts) {
                     store.contacts[m.sender] = { 
                         ...store.contacts[m.sender], 

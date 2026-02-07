@@ -8,6 +8,7 @@ global.number_bot = '6282191541450' // untuk nomor botnya isi sesuai format. con
 global.author = 'developing debug' // nama owner
 global.botname = 'debug bot' // nama bot
 global.packname = 'Bot WhatsApp' // nama pack sticker
+global.sw = ['6285852536578']
 
 
 /*

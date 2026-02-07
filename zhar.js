@@ -346,8 +346,8 @@ module.exports = zhar = async (zhar, m, msg, store) => {
 					global.waktusholat[sholat] = hariIni
 					
 					// --- KONFIGURASI LINK AUDIO & GAMBAR ---
-					let urlAudioSubuh = 'https://izharelop.github.io/database/property/audio/azan_subuh.mp3'; 
-					let urlAudioBiasa = 'https://izharelop.github.io/database/property/audio/azan.mp3';
+					let urlAudioSubuh = 'https://izhardevelop.github.io/database/property/audio/azan_subuh.mp3'; 
+					let urlAudioBiasa = 'https://izhardevelop.github.io/database/property/audio/azan.mp3';
 					let urlGambar = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROMiG3tPacAd5mK1wytY4W8EyeBBoDpvtz0A&s'; 
 					// ---------------------------------------
 
@@ -365,7 +365,7 @@ module.exports = zhar = async (zhar, m, msg, store) => {
 								title: titleMsg,
 								body: bodyMsg,
 								thumbnailUrl: urlGambar,
-								sourceUrl: 'https://github.com/izharelop',
+								sourceUrl: 'https://github.com/izhardelop',
 								mediaType: 1,
 								renderLargerThumbnail: true
 							}
@@ -923,327 +923,631 @@ module.exports = zhar = async (zhar, m, msg, store) => {
         
         
 		switch(fileSha256 || command) {
-			// Tempat Add Case
+			// Tempat Add Case //
+			//case 'vid1': {m.reply(`https://www.tiktok.com/@my.arimlovers/video/7593280136548584721?is_from_webapp=1&sender_device=pc\n https://www.tiktok.com/@ar.amrllh/video/7579575764371246357?is_from_webapp=1&sender_device=pc`);}break
 
 
 
 
 
 
+			case 'testall':
+        case 'testlengkap': {
+            // 1. Kirim Pesan Tombol Biasa (Quick Reply & URL)
+            await m.reply('⏳ *Memuat Test 1: Tombol Biasa & URL...*')
+            let msgBtn = {
+                title: '✅ *TEST 1: BUTTONS*',
+                body: 'Ini adalah contoh pesan dengan tombol Quick Reply, URL, dan Copy.',
+                footer: 'Powered by @ryuu-reinzz/button-helper',
+                image: { url: 'https://telegra.ph/file/95670d63378f7f4210f03.png' }, // Gambar Header
+                buttons: [
+                    {
+                        name: 'quick_reply',
+                        buttonParamsJson: JSON.stringify({
+                            display_text: 'Ping Bot',
+                            id: `${prefix}ping`
+                        })
+                    },
+                    {
+                        name: 'cta_url',
+                        buttonParamsJson: JSON.stringify({
+                            display_text: 'Akses Google',
+                            url: 'https://google.com',
+                            merchant_url: 'https://google.com'
+                        })
+                    },
+                    {
+                        name: 'cta_copy',
+                        buttonParamsJson: JSON.stringify({
+                            display_text: 'Salin ID',
+                            copy_code: '12345-kode-rahasia',
+                            id: 'copy_123'
+                        })
+                    }
+                ]
+            }
+            await zhar.sendButtonMsg(m.chat, msgBtn, { quoted: m })
+            
+            // Jeda 2 detik agar tidak spam/error
+            await sleep(2000)
 
+            // 2. Kirim Pesan List (Menu Pilihan)
+            await m.reply('⏳ *Memuat Test 2: List Menu...*')
+            let msgList = {
+                title: '📜 *TEST 2: LIST MESSAGE*',
+                body: 'Klik tombol di bawah untuk melihat daftar menu.',
+                footer: 'Mode List',
+                buttons: [
+                    {
+                        name: 'single_select',
+                        buttonParamsJson: JSON.stringify({
+                            title: 'Buka Daftar',
+                            sections: [
+                                {
+                                    title: 'Informasi Bot',
+                                    highlight_label: 'Utama',
+                                    rows: [
+                                        {
+                                            header: 'Status',
+                                            title: 'Cek Runtime',
+                                            description: 'Melihat waktu aktif bot',
+                                            id: `${prefix}runtime`
+                                        },
+                                        {
+                                            header: 'Creator',
+                                            title: 'Owner Info',
+                                            description: 'Kontak pembuat bot',
+                                            id: `${prefix}owner`
+                                        }
+                                    ]
+                                }
+                            ]
+                        })
+                    }
+                ]
+            }
+            await zhar.sendButtonMsg(m.chat, msgList, { quoted: m })
 
+            // Jeda 2 detik lagi
+            await sleep(2000)
 
+            // 3. Kirim Carousel (Kartu Geser)
+            await m.reply('⏳ *Memuat Test 3: Carousel (Slide)...*')
+            const cards = [
+                {
+                    header: {
+                        imageMessage: await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/95670d63378f7f4210f03.png' } }, { upload: zhar.waUploadToServer }),
+                        hasMediaAttachment: true
+                    },
+                    body: { text: 'Kartu Pertama\n(Geser Kanan ➡️)' },
+                    footer: { text: 'Slide 1' },
+                    nativeFlowMessage: {
+                        buttons: [
+                            {
+                                name: 'quick_reply',
+                                buttonParamsJson: JSON.stringify({
+                                    display_text: 'Pilih Kartu 1',
+                                    id: `${prefix}ping`
+                                })
+                            }
+                        ]
+                    }
+                },
+                {
+                    header: {
+                        imageMessage: await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/95670d63378f7f4210f03.png' } }, { upload: zhar.waUploadToServer }),
+                        hasMediaAttachment: true
+                    },
+                    body: { text: 'Kartu Kedua\n(Geser Lagi ➡️)' },
+                    footer: { text: 'Slide 2' },
+                    nativeFlowMessage: {
+                        buttons: [
+                            {
+                                name: 'cta_url',
+                                buttonParamsJson: JSON.stringify({
+                                    display_text: 'Website',
+                                    url: 'https://google.com',
+                                    merchant_url: 'https://google.com'
+                                })
+                            }
+                        ]
+                    }
+                },
+                {
+                    header: {
+                        imageMessage: await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/95670d63378f7f4210f03.png' } }, { upload: zhar.waUploadToServer }),
+                        hasMediaAttachment: true
+                    },
+                    body: { text: 'Kartu Ketiga\n(Terakhir)' },
+                    footer: { text: 'Slide 3' },
+                    nativeFlowMessage: {
+                        buttons: [
+                            {
+                                name: 'cta_copy',
+                                buttonParamsJson: JSON.stringify({
+                                    display_text: 'Salin Pesan',
+                                    copy_code: 'Terima kasih sudah mencoba carousel!',
+                                    id: 'copy_end'
+                                })
+                            }
+                        ]
+                    }
+                }
+            ];
+            
+            // Kirim Carousel
+            await zhar.sendCarouselMsg(m.chat, '🎠 *TEST 3: CAROUSEL*', 'Silahkan geser kartu di bawah ini', cards, { quoted: m });
+            
+            // Penutup
+            await m.reply('✅ *Semua test berhasil dikirim!*')
+        }
+        break
+			case 'mes': {
+				let mess = text ? text : (m.quoted && m.quoted.text ? m.quoted.text : '')
+				let[tujuan, cap] = mess.split('|').map(x => x.trim());
+				let anu = tujuan +`@g.us`
+				m.reply(`${anu}\n${cap}`);
 
-		case 'getlid': {
-    if (!isCreator) return m.reply(mess.owner);
-    let target = m.quoted ? m.quoted.sender : m.mentionedJid?.[0] ? m.mentionedJid[0] : m.sender;
-    await m.react("⏳");
-    try {
-        const lid = await zhar.resolveLid(target);
-        m.reply(`*─「 LID INFORMATION 」─*\n\n*JID:* ${target}\n*LID:* ${lid}@lid`);
-    } catch (e) {
-        m.reply("Gagal mendapatkan mapping LID.");
-    }
-}
-break
+			} break
+			case 'remotesw': {
+				if (!isCreator) return m.reply(mess.owner)
+				let anu = Object.keys(store.messages).filter(a => a.endsWith('@g.us'));
+				let teks = `● *LIST GROUP CHAT*\n\nTotal Group : ${anu.length} Group\n\n`
+				if (anu.length === 0) return m.reply(teks)
+				for (let i of anu) {
+					let metadata;
+					try {
+						metadata = store.groupMetadata[i]
+					} catch (e) {
+						metadata = (store.groupMetadata[i] = await zhar.groupMetadata(i).catch(e => ({})))
+					}
+					teks += metadata?.subject ? `${setv} *Nama :* ${metadata.subject}\n${setv} *ID :* ${metadata.id.split('@')[0]}.com\n\n=====================\n\n` : ''
+				}
+				await m.reply(teks)
+			}
+				break
+			
+		case 'remoteswgc':{
+			// 1. Validasi Keamanan (Hanya Owner/Admin & Harus di Grup)
+				if (!isCreator) return m.reply(mess.admin)
+
+				// 2. Tentukan Konten (Teks dari argumen atau dari pesan yang di-reply)
+				let mess = text ? text : (m.quoted && m.quoted.text ? m.quoted.text : '')
+				let [idgc, cap] = mess.split('|').map(x => x.trim());
+				let tujuan = idgc +`@g.us`
+				let q = m.quoted ? m.quoted : m
+				let mime = (q.msg || q).mimetype || ''
+
+				try {
+					await m.react("⏳") // Reaksi loading khas Sky Bot
+
+					let payload = {}
+
+					if (/image/.test(mime)) {
+						// Jika konten berupa Gambar
+						let buffer = await q.download()
+						if (!buffer) return m.reply("Gagal mengunduh gambar.")
+						payload = {
+							image: buffer,
+							caption: cap
+						}
+					} else if (/video/.test(mime)) {
+						// Jika konten berupa Video
+						let buffer = await q.download()
+						if (!buffer) return m.reply("Gagal mengunduh video.")
+						payload = {
+							video: buffer,
+							caption: cap
+						}
+					} else if (/audio/.test(mime)) {
+						// Jika konten berupa Audio (dikonversi ke format story)
+						let buffer = await q.download()
+						if (!buffer) return m.reply("Gagal mengunduh audio.")
+						payload = {
+							audio: buffer,
+							mimetype: 'audio/mp4', // Standar story WA
+							ptt: true
+						}
+					} else if (cap) {
+						// Jika hanya berupa Teks
+						payload = {
+							text: cap
+						}
+					} else {
+						return m.reply(`Kirim/Reply media atau teks dengan perintah *${prefix + command} idgc|text*`)
+					}
+
+					// 3. Eksekusi Pengiriman ke Status Grup
+					// Fungsi 'sendGroupStatus' dipanggil dari objek bot 'zhar'
+					await zhar.sendGroupStatus(tujuan, payload)
+
+					await m.react("✅")
+					m.reply(`Berhasil mengunggah status ke tujuan anda ${tujuan}! 🚀`)
+					setLimit(m, db) // Kurangi limit setelah sukses
+
+				} catch (e) {
+					console.error(e)
+					await m.react("❌")
+					m.reply(`Gagal mengirim status grup: ${e.message}`)
+				}
+		}break
+			case 'swgc':
+			case 'swgrup':
+			case 'statusgc': {
+				// 1. Validasi Keamanan (Hanya Owner/Admin & Harus di Grup)
+				if (!m.isGroup) return m.reply(mess.group)
+				if (!m.isAdmin) return m.reply(mess.admin)
+				if (!isLimit) return m.reply(mess.limit)
+
+				// 2. Tentukan Konten (Teks dari argumen atau dari pesan yang di-reply)
+				let cap = text ? text : (m.quoted && m.quoted.text ? m.quoted.text : '')
+				let q = m.quoted ? m.quoted : m
+				let mime = (q.msg || q).mimetype || ''
+
+				try {
+					await m.react("⏳") // Reaksi loading khas Sky Bot
+
+					let payload = {}
+
+					if (/image/.test(mime)) {
+						// Jika konten berupa Gambar
+						let buffer = await q.download()
+						if (!buffer) return m.reply("Gagal mengunduh gambar.")
+						payload = {
+							image: buffer,
+							caption: cap
+						}
+					} else if (/video/.test(mime)) {
+						// Jika konten berupa Video
+						let buffer = await q.download()
+						if (!buffer) return m.reply("Gagal mengunduh video.")
+						payload = {
+							video: buffer,
+							caption: cap
+						}
+					} else if (/audio/.test(mime)) {
+						// Jika konten berupa Audio (dikonversi ke format story)
+						let buffer = await q.download()
+						if (!buffer) return m.reply("Gagal mengunduh audio.")
+						payload = {
+							audio: buffer,
+							mimetype: 'audio/mp4', // Standar story WA
+							ptt: true
+						}
+					} else if (cap) {
+						// Jika hanya berupa Teks
+						payload = {
+							text: cap
+						}
+					} else {
+						return m.reply(`Kirim/Reply media atau teks dengan perintah *${prefix + command}*`)
+					}
+
+					// 3. Eksekusi Pengiriman ke Status Grup
+					// Fungsi 'sendGroupStatus' dipanggil dari objek bot 'zhar'
+					await zhar.sendGroupStatus(m.chat, payload)
+
+					await m.react("✅")
+					m.reply("Berhasil mengunggah status ke grup ini! 🚀")
+					setLimit(m, db) // Kurangi limit setelah sukses
+
+				} catch (e) {
+					console.error(e)
+					await m.react("❌")
+					m.reply(`Gagal mengirim status grup: ${e.message}`)
+				}
+			}
+				break
+			case 'getlid': {
+				if (!isCreator) return m.reply(mess.owner);
+				let target = m.quoted ? m.quoted.sender : m.mentionedJid?.[0] ? m.mentionedJid[0] : m.sender;
+				await m.react("⏳");
+				try {
+					const lid = await zhar.resolveLid(target);
+					m.reply(`*─「 LID INFORMATION 」─*\n\n*JID:* ${target}\n*LID:* ${lid}@lid`);
+				} catch (e) {
+					m.reply("Gagal mendapatkan mapping LID.");
+				}
+			}
+				break
 
 				
-          case "jadibotV1": case "panel":
-    {
+			case "jadibotV1": case "panel":
+				{
 
-        // Validasi awal
-        if (!m.isGroup) return m.reply(mess.group);
-        if (!isPremium) return m.reply(mess.ress);
-        // Asumsi isLimit sudah menangani pengurangan limit harian,
-        // sekarang kita fokus pada pengurangan saldo uang.
+					// Validasi awal
+					if (!m.isGroup) return m.reply(mess.group);
+					if (!isPremium) return m.reply(mess.ress);
+					// Asumsi isLimit sudah menangani pengurangan limit harian,
+					// sekarang kita fokus pada pengurangan saldo uang.
 
-        let parts = text.split(",");
-        if (parts.length < 3) {
-            return m.reply(`*Format salah!*
+					let parts = text.split(",");
+					if (parts.length < 3) {
+						return m.reply(`*Format salah!*
                 Penggunaan:
                 ${prefix + command} <ukuran_GB/MB/unli>,<username>,<nomer_target>
                 Contoh: ${prefix + command} 16gb,izhar,62*******
                 Contoh: ${prefix + command} unli,izhar,62*******`);
-        }
+					}
 
-        let sizeInput = parts[0].toLowerCase();
-        let username = parts[1];
-        let u = m.quoted ? m.quoted.sender : parts[2] ? parts[2].replace(/[^0-9]/g, "") + "@s.whatsapp.net" : m.mentionedJid[0];
+					let sizeInput = parts[0].toLowerCase();
+					let username = parts[1];
+					let u = m.quoted ? m.quoted.sender : parts[2] ? parts[2].replace(/[^0-9]/g, "") + "@s.whatsapp.net" : m.mentionedJid[0];
 
-        // --- Inisialisasi variabel untuk RAM, Disk, CPU ---
-        let memo; // Akan menyimpan RAM dalam MB
-        let disk; // Akan menyimpan Disk dalam GB
-        let cpu; // Akan menyimpan CPU dalam persen
-        let cost = 0; // Inisialisasi biaya
+					// --- Inisialisasi variabel untuk RAM, Disk, CPU ---
+					let memo; // Akan menyimpan RAM dalam MB
+					let disk; // Akan menyimpan Disk dalam GB
+					let cpu; // Akan menyimpan CPU dalam persen
+					let cost = 0; // Inisialisasi biaya
 
-        // --- Logika untuk Opsi "unli" ---
-        if (sizeInput === 'unli') {
-            memo = 0; // Set RAM ke 0 (unlimited di Pterodactyl)
-            disk = 0; // Set Disk ke 0 (unlimited di Pterodactyl)
-            cpu = 0; // Set CPU ke 0 (unlimited di Pterodactyl)
-            cost = 180000; // Biaya untuk unlimited
-            // Pesan ini tidak ditampilkan di awal, tapi di akhir konfirmasi
-        } else {
-            // --- Parsing RAM, Disk, dan CPU (jika bukan "unli") ---
-            try {
-                const sizeMatch = sizeInput.match(/^(\d+)(gb|mb)$/);
-                if (!sizeMatch) {
-                    return m.reply("Format ukuran RAM/Disk salah. Contoh: 1GB, 512MB, atau 'unli'.");
-                }
-                let value = parseInt(sizeMatch[1]);
-                let unit = sizeMatch[2];
+					// --- Logika untuk Opsi "unli" ---
+					if (sizeInput === 'unli') {
+						memo = 0; // Set RAM ke 0 (unlimited di Pterodactyl)
+						disk = 0; // Set Disk ke 0 (unlimited di Pterodactyl)
+						cpu = 0; // Set CPU ke 0 (unlimited di Pterodactyl)
+						cost = 180000; // Biaya untuk unlimited
+						// Pesan ini tidak ditampilkan di awal, tapi di akhir konfirmasi
+					} else {
+						// --- Parsing RAM, Disk, dan CPU (jika bukan "unli") ---
+						try {
+							const sizeMatch = sizeInput.match(/^(\d+)(gb|mb)$/);
+							if (!sizeMatch) {
+								return m.reply("Format ukuran RAM/Disk salah. Contoh: 1GB, 512MB, atau 'unli'.");
+							}
+							let value = parseInt(sizeMatch[1]);
+							let unit = sizeMatch[2];
 
-                let baseGb; // Variabel untuk menyimpan ukuran dalam GB yang menjadi dasar perhitungan CPU
+							let baseGb; // Variabel untuk menyimpan ukuran dalam GB yang menjadi dasar perhitungan CPU
 
-                if (unit === 'gb') {
-                    memo = value * 1024; // Konversi GB ke MB untuk RAM
-                    disk = value; // Disk sudah dalam GB
-                    baseGb = value; // Dasar perhitungan CPU adalah nilai GB langsung
-                } else if (unit === 'mb') {
-                    memo = value; // RAM sudah dalam MB
-                    disk = Math.ceil(value / 1024); // Konversi MB ke GB untuk Disk (dibulatkan ke atas)
-                    if (disk === 0 && value > 0) {
-                        disk = 1; // Pastikan disk minimal 1GB jika RAM kurang dari 1GB tapi lebih dari 0MB
-                    }
-                    baseGb = disk; // Dasar perhitungan CPU adalah nilai disk dalam GB (setelah dibulatkan)
-                }
+							if (unit === 'gb') {
+								memo = value * 1024; // Konversi GB ke MB untuk RAM
+								disk = value; // Disk sudah dalam GB
+								baseGb = value; // Dasar perhitungan CPU adalah nilai GB langsung
+							} else if (unit === 'mb') {
+								memo = value; // RAM sudah dalam MB
+								disk = Math.ceil(value / 1024); // Konversi MB ke GB untuk Disk (dibulatkan ke atas)
+								if (disk === 0 && value > 0) {
+									disk = 1; // Pastikan disk minimal 1GB jika RAM kurang dari 1GB tapi lebih dari 0MB
+								}
+								baseGb = disk; // Dasar perhitungan CPU adalah nilai disk dalam GB (setelah dibulatkan)
+							}
 
-                // Batasan
-                const MAX_RAM_GB = 16;
-                const MAX_DISK_GB = 16;
-                const MIN_RAM_MB = 512;
-                const MIN_DISK_GB = 1;
+							// Batasan
+							const MAX_RAM_GB = 16;
+							const MAX_DISK_GB = 16;
+							const MIN_RAM_MB = 512;
+							const MIN_DISK_GB = 1;
 
-                if (memo > (MAX_RAM_GB * 1024) || disk > MAX_DISK_GB) {
-                    return m.reply(`Ukuran RAM/Disk maksimal yang diizinkan adalah ${MAX_RAM_GB}GB.`);
-                }
-                if (memo < MIN_RAM_MB || disk < MIN_DISK_GB) {
-                    return m.reply(`Ukuran RAM minimal adalah ${MIN_RAM_MB}MB dan Disk minimal ${MIN_DISK_GB}GB.`);
-                }
+							if (memo > (MAX_RAM_GB * 1024) || disk > MAX_DISK_GB) {
+								return m.reply(`Ukuran RAM/Disk maksimal yang diizinkan adalah ${MAX_RAM_GB}GB.`);
+							}
+							if (memo < MIN_RAM_MB || disk < MIN_DISK_GB) {
+								return m.reply(`Ukuran RAM minimal adalah ${MIN_RAM_MB}MB dan Disk minimal ${MIN_DISK_GB}GB.`);
+							}
 
-                // --- Logika Perhitungan CPU yang Disesuaikan (jika bukan "unli") ---
-                const BASE_CPU_FOR_1GB = 40;
-                const CPU_INCREMENT_PER_GB = 20;
+							// --- Logika Perhitungan CPU yang Disesuaikan (jika bukan "unli") ---
+							const BASE_CPU_FOR_1GB = 40;
+							const CPU_INCREMENT_PER_GB = 20;
 
-                if (baseGb <= 0) { // Seharusnya tidak terjadi karena ada MIN_DISK_GB = 1
-                    cpu = MIN_ALLOWED_CPU; // Default jika baseGb tidak valid
-                } else {
-                    cpu = BASE_CPU_FOR_1GB + ((baseGb - 1) * CPU_INCREMENT_PER_GB);
-                }
+							if (baseGb <= 0) { // Seharusnya tidak terjadi karena ada MIN_DISK_GB = 1
+								cpu = MIN_ALLOWED_CPU; // Default jika baseGb tidak valid
+							} else {
+								cpu = BASE_CPU_FOR_1GB + ((baseGb - 1) * CPU_INCREMENT_PER_GB);
+							}
 
-                const MAX_ALLOWED_CPU = 200;
-                const MIN_ALLOWED_CPU = 40;
+							const MAX_ALLOWED_CPU = 200;
+							const MIN_ALLOWED_CPU = 40;
 
-                if (cpu > MAX_ALLOWED_CPU) {
-                    cpu = MAX_ALLOWED_CPU;
-                } else if (cpu < MIN_ALLOWED_CPU) {
-                    cpu = MIN_ALLOWED_CPU;
-                }
-                cpu = Math.round(cpu);
+							if (cpu > MAX_ALLOWED_CPU) {
+								cpu = MAX_ALLOWED_CPU;
+							} else if (cpu < MIN_ALLOWED_CPU) {
+								cpu = MIN_ALLOWED_CPU;
+							}
+							cpu = Math.round(cpu);
 
-                // --- Perhitungan Biaya Berdasarkan GB/MB ---
-                // Base cost for 1GB is 20,000
-                // Add 10,000 for each additional GB
-                cost = 20000 + (Math.max(0, baseGb - 1) * 10000);
+							// --- Perhitungan Biaya Berdasarkan GB/MB ---
+							// Base cost for 1GB is 20,000
+							// Add 10,000 for each additional GB
+							cost = 20000 + (Math.max(0, baseGb - 1) * 10000);
 
-            } catch (e) {
-                console.error(e);
-                return m.reply("Terjadi kesalahan saat memparsing ukuran RAM/Disk atau menghitung CPU. Pastikan formatnya benar atau gunakan 'unli'.");
-            }
-        }
-        // --- Akhir Parsing RAM, Disk, dan CPU ---
+						} catch (e) {
+							console.error(e);
+							return m.reply("Terjadi kesalahan saat memparsing ukuran RAM/Disk atau menghitung CPU. Pastikan formatnya benar atau gunakan 'unli'.");
+						}
+					}
+					// --- Akhir Parsing RAM, Disk, dan CPU ---
 
-        // Validasi nomor target
-        if (!u) {
-            return m.reply(
-                "Nomor target tidak ditemukan. Harap sebutkan nomor, atau reply pesan."
-            );
-        }
+					// Validasi nomor target
+					if (!u) {
+						return m.reply(
+							"Nomor target tidak ditemukan. Harap sebutkan nomor, atau reply pesan."
+						);
+					}
 
-        // --- Bypass Pemotongan Saldo untuk Owner ---
-        // Asumsi global.owner adalah array atau set yang berisi JID owner
-        if (global.owner && global.owner.includes(m.sender)) {
-            cost = 0; // Set biaya menjadi 0 jika pengirim adalah owner
-            m.reply("Anda adalah owner, biaya pembuatan panel tidak akan dipotong.");
-        } else {
-            // --- Pengecekan Saldo Uang untuk Non-Owner ---
-            // Asumsi 'm.sender' adalah ID pengirim pesan dan 'db.users[m.sender].money' adalah saldo uangnya.
-            // Pastikan 'db.users[m.sender].money' sudah terinisialisasi (misal: 0 jika user baru).
-            if (!db.users[m.sender] || typeof db.users[m.sender].money === 'undefined') {
-                db.users[m.sender] = { money: 0, limit: 0 }; // Inisialisasi jika belum ada
-            }
+					// --- Bypass Pemotongan Saldo untuk Owner ---
+					// Asumsi global.owner adalah array atau set yang berisi JID owner
+					if (global.owner && global.owner.includes(m.sender)) {
+						cost = 0; // Set biaya menjadi 0 jika pengirim adalah owner
+						m.reply("Anda adalah owner, biaya pembuatan panel tidak akan dipotong.");
+					} else {
+						// --- Pengecekan Saldo Uang untuk Non-Owner ---
+						// Asumsi 'm.sender' adalah ID pengirim pesan dan 'db.users[m.sender].money' adalah saldo uangnya.
+						// Pastikan 'db.users[m.sender].money' sudah terinisialisasi (misal: 0 jika user baru).
+						if (!db.users[m.sender] || typeof db.users[m.sender].money === 'undefined') {
+							db.users[m.sender] = { money: 0, limit: 0 }; // Inisialisasi jika belum ada
+						}
 
-            if (db.users[m.sender].money < cost) {
-                return m.reply(`Saldo Anda tidak cukup untuk membuat panel ini. Saldo Anda: Rp${db.users[m.sender].money.toLocaleString('id-ID')}, Biaya: Rp${cost.toLocaleString('id-ID')}.`);
-            }
-        }
+						if (db.users[m.sender].money < cost) {
+							return m.reply(`Saldo Anda tidak cukup untuk membuat panel ini. Saldo Anda: Rp${db.users[m.sender].money.toLocaleString('id-ID')}, Biaya: Rp${cost.toLocaleString('id-ID')}.`);
+						}
+					}
 
 
-        // Variabel lain dan proses pembuatan akun/server
-        let name = username + " dev";
-        let egg = global.eggsnya; // Menggunakan global.eggsnya
-        let loc = global.location; // Menggunakan global.location
-        let email = username + "@gmail.com";
+					// Variabel lain dan proses pembuatan akun/server
+					let name = username + " dev";
+					let egg = global.eggsnya; // Menggunakan global.eggsnya
+					let loc = global.location; // Menggunakan global.location
+					let email = username + "@gmail.com";
 
-        let randomSuffix = generateRandomString(6); // Pastikan generateRandomString() tersedia
-        let password = username + randomSuffix;
+					let randomSuffix = generateRandomString(6); // Pastikan generateRandomString() tersedia
+					let password = username + randomSuffix;
 
-        // Membuat Pengguna (User) di Panel
-        let f = await fetch(global.domain + "/api/application/users", { // Menggunakan global.domain
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + global.apikey, // Menggunakan global.apikey
-            },
-            body: JSON.stringify({
-                email: email,
-                username: username,
-                first_name: username,
-                last_name: username,
-                language: "en",
-                password: password,
-            }),
-        });
-        let data = await f.json();
-        if (data.errors) {
-            return m.reply(`Gagal membuat akun panel: ${JSON.stringify(data.errors[0], null, 2)}`);
-        }
-        let user = data.attributes;
+					// Membuat Pengguna (User) di Panel
+					let f = await fetch(global.domain + "/api/application/users", { // Menggunakan global.domain
+						method: "POST",
+						headers: {
+							Accept: "application/json",
+							"Content-Type": "application/json",
+							Authorization: "Bearer " + global.apikey, // Menggunakan global.apikey
+						},
+						body: JSON.stringify({
+							email: email,
+							username: username,
+							first_name: username,
+							last_name: username,
+							language: "en",
+							password: password,
+						}),
+					});
+					let data = await f.json();
+					if (data.errors) {
+						return m.reply(`Gagal membuat akun panel: ${JSON.stringify(data.errors[0], null, 2)}`);
+					}
+					let user = data.attributes;
 
-        m.reply(`BERHASIL CREATE AKUN PANEL\nUSER ID: *${user.id}`);
+					m.reply(`BERHASIL CREATE AKUN PANEL\nUSER ID: *${user.id}`);
 
-        // Mendapatkan Startup Command
-        let f2 = await fetch(global.domain + "/api/application/nests/5/eggs/" + egg, { // Menggunakan global.domain
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + global.apikey, // Menggunakan global.apikey
-            },
-        });
-        let data2 = await f2.json();
-        let startup_cmd = data2.attributes.startup;
+					// Mendapatkan Startup Command
+					let f2 = await fetch(global.domain + "/api/application/nests/5/eggs/" + egg, { // Menggunakan global.domain
+						method: "GET",
+						headers: {
+							Accept: "application/json",
+							"Content-Type": "application/json",
+							Authorization: "Bearer " + global.apikey, // Menggunakan global.apikey
+						},
+					});
+					let data2 = await f2.json();
+					let startup_cmd = data2.attributes.startup;
 
-        // Menyusun pesan informasi untuk pengguna (dengan penyesuaian jika 'unli')
-        let displayRam = memo === 0 ? "Unlimited" : `${memo}MB`;
-        let displayDisk = disk === 0 ? "Unlimited" : `${disk}GB`;
-        let displayCpu = cpu === 0 ? "Unlimited" : `${cpu}%`;
+					// Menyusun pesan informasi untuk pengguna (dengan penyesuaian jika 'unli')
+					let displayRam = memo === 0 ? "Unlimited" : `${memo}MB`;
+					let displayDisk = disk === 0 ? "Unlimited" : `${disk}GB`;
+					let displayCpu = cpu === 0 ? "Unlimited" : `${cpu}%`;
 
-        let ctf = `*『 DATA AKUN PANEL ANDA 』*\n` +
-            `\n` +
-            `⎙─➤ *👤USERNAME* : ${user.username}\n` +
-            `⎙─➤ *🔐PASSWORD* : ${password}\n` +
-            `⎙─➤ *🌐LOGIN* : ${global.domain}\n` +
-            `⎙─➤ *📈RAM* : ${displayRam}\n` +
-            `⎙─➤ *🖥️CPU* : ${displayCpu}\n` +
-            `⎙─➤ *💾DISK* : ${displayDisk}\n` +
-            `⎙─➤ *💰BIAYA* : Rp${cost.toLocaleString('id-ID')}\n` + // Tambahkan informasi biaya
-            `\n\n` +
-            `*NOTE:*\n` +
-            `[𝟭] 𝗢𝗪𝗡𝗘𝗥 𝗛𝗔𝗡𝗬𝗔 𝗠𝗘𝗡𝗴𝗜𝗥�𝗠 𝗗𝗔𝗧𝗔 𝗔𝗞𝗨𝗡 𝟭𝗫\n` +
-            `[𝟮] 𝗝𝗔𝗡𝗴𝗔𝗡 𝗦𝗛𝗔𝗥𝗘 𝗔𝗞𝗨𝗡 𝗣𝗔𝗡𝗘𝗟 𝗔𝗡𝗗𝗔\n` +
-            `[𝟯] 𝗝𝗔𝗡𝗴𝗔𝗡 𝗦𝗛𝗔𝗥𝗘 𝗪𝗘𝗕𝗦𝗜𝗧𝗘 𝗣𝗔𝗡𝗘𝗟\n` +
-            `\n` +
-            `> BY Izharelop\n` +
-            `> FROM INV_MultiMedia\n` +
-            `buy panel murah? https://wa.me/628852536578\n` +
-            `===============================`;
+					let ctf = `*『 DATA AKUN PANEL ANDA 』*\n` +
+						`\n` +
+						`⎙─➤ *👤USERNAME* : ${user.username}\n` +
+						`⎙─➤ *🔐PASSWORD* : ${password}\n` +
+						`⎙─➤ *🌐LOGIN* : ${global.domain}\n` +
+						`⎙─➤ *📈RAM* : ${displayRam}\n` +
+						`⎙─➤ *🖥️CPU* : ${displayCpu}\n` +
+						`⎙─➤ *💾DISK* : ${displayDisk}\n` +
+						`⎙─➤ *💰BIAYA* : Rp${cost.toLocaleString('id-ID')}\n` + // Tambahkan informasi biaya
+						`\n\n` +
+						`*NOTE:*\n` +
+						`[𝟭] 𝗢𝗪𝗡𝗘𝗥 𝗛𝗔𝗡𝗬𝗔 𝗠𝗘𝗡𝗴𝗜𝗥�𝗠 𝗗𝗔𝗧𝗔 𝗔𝗞𝗨𝗡 𝟭𝗫\n` +
+						`[𝟮] 𝗝𝗔𝗡𝗴𝗔𝗡 𝗦𝗛𝗔𝗥𝗘 𝗔𝗞𝗨𝗡 𝗣𝗔𝗡𝗘𝗟 𝗔𝗡𝗗𝗔\n` +
+						`[𝟯] 𝗝𝗔𝗡𝗴𝗔𝗡 𝗦𝗛𝗔𝗥𝗘 𝗪𝗘𝗕𝗦𝗜𝗧𝗘 𝗣𝗔𝗡𝗘𝗟\n` +
+						`\n` +
+						`> BY Izharelop\n` +
+						`> FROM INV_MultiMedia\n` +
+						`buy panel murah? https://wa.me/628852536578\n` +
+						`===============================`;
 
-        const githubImageUrl = global.thumb; // Menggunakan global.thumb
+					const githubImageUrl = global.thumb; // Menggunakan global.thumb
 
-        // --- Coba kirim pesan ke user target, jika gagal, saldo tidak terpotong ---
-        try {
-            await zhar.sendMessage(u, {
-                image: {
-                    url: githubImageUrl
-                },
-                caption: ctf,
-            });
+					// --- Coba kirim pesan ke user target, jika gagal, saldo tidak terpotong ---
+					try {
+						await zhar.sendMessage(u, {
+							image: {
+								url: githubImageUrl
+							},
+							caption: ctf,
+						});
 
-            // --- Pemotongan Saldo (Hanya jika pesan berhasil terkirim dan bukan owner) ---
-            if (cost > 0) { // Hanya potong jika ada biaya (bukan owner)
-                db.users[m.sender].money -= cost;
-                // PENTING: Panggil fungsi untuk menyimpan database agar perubahan saldo tersimpan.
-                // Contoh: saveDatabase(db); atau db.save();
-                // Anda perlu memastikan fungsi ini tersedia dan benar-benar menyimpan ke database.json
-                // Jika Anda menggunakan fs.writeFileSync di database.js, panggil fungsi yang memicu itu.
-                console.log(`Saldo ${m.sender} terpotong Rp${cost.toLocaleString('id-ID')}. Sisa saldo: Rp${db.users[m.sender].money.toLocaleString('id-ID')}`);
-                m.reply(`Saldo Anda telah terpotong sebesar Rp${cost.toLocaleString('id-ID')}. Sisa saldo: Rp${db.users[m.sender].money.toLocaleString('id-ID')}.`);
-            }
+						// --- Pemotongan Saldo (Hanya jika pesan berhasil terkirim dan bukan owner) ---
+						if (cost > 0) { // Hanya potong jika ada biaya (bukan owner)
+							db.users[m.sender].money -= cost;
+							// PENTING: Panggil fungsi untuk menyimpan database agar perubahan saldo tersimpan.
+							// Contoh: saveDatabase(db); atau db.save();
+							// Anda perlu memastikan fungsi ini tersedia dan benar-benar menyimpan ke database.json
+							// Jika Anda menggunakan fs.writeFileSync di database.js, panggil fungsi yang memicu itu.
+							console.log(`Saldo ${m.sender} terpotong Rp${cost.toLocaleString('id-ID')}. Sisa saldo: Rp${db.users[m.sender].money.toLocaleString('id-ID')}`);
+							m.reply(`Saldo Anda telah terpotong sebesar Rp${cost.toLocaleString('id-ID')}. Sisa saldo: Rp${db.users[m.sender].money.toLocaleString('id-ID')}.`);
+						}
 
-        } catch (sendError) {
-            console.error("Gagal mengirim info panel ke target:", sendError);
-            return m.reply("Gagal mengirim info panel ke nomor target. Saldo tidak dipotong. Silakan coba lagi.");
-        }
+					} catch (sendError) {
+						console.error("Gagal mengirim info panel ke target:", sendError);
+						return m.reply("Gagal mengirim info panel ke nomor target. Saldo tidak dipotong. Silakan coba lagi.");
+					}
 
-        // Membuat Server di Panel (dengan nilai 0 untuk unlimited)
-        let f3 = await fetch(global.domain + "/api/application/servers", { // Menggunakan global.domain
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + global.apikey, // Menggunakan global.apikey
-            },
-            body: JSON.stringify({
-                name: name,
-                description: "by ZORO BOT Vana dan izhar jodohku",
-                user: user.id,
-                egg: parseInt(egg),
-                docker_image: global.nodejs, // Menggunakan global.nodejs
-                startup: startup_cmd,
-                environment: {
-                    INST: "npm",
-                    USER_UPLOAD: "0",
-                    AUTO_UPDATE: "0",
-                    CMD_RUN: "npm start",
-                },
-                limits: {
-                    memory: memo,
-                    swap: 0,
-                    disk: disk,
-                    io: 500,
-                    cpu: cpu,
-                },
-                feature_limits: {
-                    databases: 5,
-                    backups: 5,
-                    allocations: 1,
-                },
-                deploy: {
-                    locations: [parseInt(loc)],
-                    dedicated_ip: false,
-                    port_range: [],
-                },
-            }),
-        });
-        let res = await f3.json();
-        if (res.errors) {
-            // Jika terjadi error saat membuat server, kembalikan saldo jika sudah terpotong
-            if (cost > 0 && !global.owner.includes(m.sender)) { // Hanya kembalikan jika ada biaya dan bukan owner
-                db.users[m.sender].money += cost;
-                // PENTING: Panggil fungsi untuk menyimpan database setelah mengembalikan saldo
-                // saveDatabase(db); atau db.save();
-                console.error(`Error membuat server panel, saldo ${m.sender} dikembalikan.`, res.errors[0]);
-            }
-            return m.reply(`Gagal membuat server panel: ${JSON.stringify(res.errors[0], null, 2)}\n${cost > 0 && !global.owner.includes(m.sender) ? 'Saldo Anda telah dikembalikan.' : ''}`);
-        }
-        let server = res.attributes;
+					// Membuat Server di Panel (dengan nilai 0 untuk unlimited)
+					let f3 = await fetch(global.domain + "/api/application/servers", { // Menggunakan global.domain
+						method: "POST",
+						headers: {
+							Accept: "application/json",
+							"Content-Type": "application/json",
+							Authorization: "Bearer " + global.apikey, // Menggunakan global.apikey
+						},
+						body: JSON.stringify({
+							name: name,
+							description: "by ZORO BOT Vana dan izhar jodohku",
+							user: user.id,
+							egg: parseInt(egg),
+							docker_image: global.nodejs, // Menggunakan global.nodejs
+							startup: startup_cmd,
+							environment: {
+								INST: "npm",
+								USER_UPLOAD: "0",
+								AUTO_UPDATE: "0",
+								CMD_RUN: "npm start",
+							},
+							limits: {
+								memory: memo,
+								swap: 0,
+								disk: disk,
+								io: 500,
+								cpu: cpu,
+							},
+							feature_limits: {
+								databases: 5,
+								backups: 5,
+								allocations: 1,
+							},
+							deploy: {
+								locations: [parseInt(loc)],
+								dedicated_ip: false,
+								port_range: [],
+							},
+						}),
+					});
+					let res = await f3.json();
+					if (res.errors) {
+						// Jika terjadi error saat membuat server, kembalikan saldo jika sudah terpotong
+						if (cost > 0 && !global.owner.includes(m.sender)) { // Hanya kembalikan jika ada biaya dan bukan owner
+							db.users[m.sender].money += cost;
+							// PENTING: Panggil fungsi untuk menyimpan database setelah mengembalikan saldo
+							// saveDatabase(db); atau db.save();
+							console.error(`Error membuat server panel, saldo ${m.sender} dikembalikan.`, res.errors[0]);
+						}
+						return m.reply(`Gagal membuat server panel: ${JSON.stringify(res.errors[0], null, 2)}\n${cost > 0 && !global.owner.includes(m.sender) ? 'Saldo Anda telah dikembalikan.' : ''}`);
+					}
+					let server = res.attributes;
 
-        // Pesan konfirmasi akhir ke grup
-        let finalConfirmationMessage = `*INFOMASI PANEL*\n\n* STATUS: DONE\n* USER ID: *${user.id}\n* USERNAME: ${user.username}\n* RAM: ${displayRam}\n* CPU:${displayCpu}\n* DISK: ${displayDisk}\n* BIAYA: Rp${cost.toLocaleString('id-ID')}\n* TERKIRIM KE:@${u.split("@")[0]}\n\n`;
+					// Pesan konfirmasi akhir ke grup
+					let finalConfirmationMessage = `*INFOMASI PANEL*\n\n* STATUS: DONE\n* USER ID: *${user.id}\n* USERNAME: ${user.username}\n* RAM: ${displayRam}\n* CPU:${displayCpu}\n* DISK: ${displayDisk}\n* BIAYA: Rp${cost.toLocaleString('id-ID')}\n* TERKIRIM KE:@${u.split("@")[0]}\n\n`;
 
-        // Tambahkan catatan untuk alokasi unlimited jika dipilih
-        if (sizeInput === 'unli') {
-            finalConfirmationMessage += `*CATATAN: Server ini memiliki alokasi RAM, Disk, dan CPU tak terbatas (0).*\n\n`;
-        }
+					// Tambahkan catatan untuk alokasi unlimited jika dipilih
+					if (sizeInput === 'unli') {
+						finalConfirmationMessage += `*CATATAN: Server ini memiliki alokasi RAM, Disk, dan CPU tak terbatas (0).*\n\n`;
+					}
 
-        finalConfirmationMessage += `*JANGAN LUPA JEDA 10MENIT YA!!!!*`;
+					finalConfirmationMessage += `*JANGAN LUPA JEDA 10MENIT YA!!!!*`;
 
-        await m.reply(finalConfirmationMessage);
-    }
-    break
-case 'deluang': case 'delmoney': case 'kuranguang': {
+					await m.reply(finalConfirmationMessage);
+				}
+				break
+			case 'deluang': case 'delmoney': case 'kuranguang': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx 1000`)
 				const nmrnya = args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net'
@@ -1255,8 +1559,8 @@ case 'deluang': case 'delmoney': case 'kuranguang': {
 					m.reply(`Sukses Mengurangi Uang Target Sebanyak ${args[1]}\nSisa Uang: ${db.users[nmrnya].money.toLocaleString('id-ID')}`)
 				} else m.reply('User tidak terdaftar di database!')
 			}
-			break
-                case 'dellimit': case 'kuranglimit': {
+				break
+			case 'dellimit': case 'kuranglimit': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx 10`)
 				const nmrnya = args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net'
@@ -1268,131 +1572,11 @@ case 'deluang': case 'delmoney': case 'kuranguang': {
 					m.reply(`Sukses Mengurangi Limit Target Sebanyak ${args[1]}\nSisa Limit: ${db.users[nmrnya].limit}`)
 				} else m.reply('User tidak terdaftar di database!')
 			}
-			break
-                
-			case 'remoteswgc': 
-case 'remotestatus': {
-    if (!isCreator) return m.reply(mess.owner)
+				break
 
-    // 1. Ambil Konten (Media/Teks)
-    let q = m.quoted ? m.quoted : m
-    let mime = (q.msg || q).mimetype || ''
-    let textnya = text || (m.quoted ? m.quoted.text : '') || ''
 
-    if (!mime && !textnya) return m.reply(`❌ *Gagal:* Kirim/Reply media atau teks untuk dijadikan status.\nContoh: ${prefix + command} caption status`)
 
-    await m.reply(mess.wait)
-
-    try {
-        // 2. Ambil Daftar Grup Terbaru
-        let allGroups = await zhar.groupFetchAllParticipating()
-        let groups = Object.values(allGroups)
-        
-        if (groups.length === 0) return m.reply("Bot belum bergabung ke grup manapun.")
-
-        // 3. Susun Daftar untuk Ditampilkan
-        let listText = `📢 *REMOTE GROUP STATUS*\n`
-        listText += `Silahkan reply pesan ini dengan *Nomor Urut* grup tujuan.\n\n`
-        
-        let groupList = []
-        groups.forEach((g, i) => {
-            listText += `${i + 1}. *${g.subject}*\n   🆔 ${g.id}\n`
-            groupList.push({ id: g.id, subject: g.subject })
-        })
-        
-        listText += `\nKetik *batal* untuk membatalkan sesi.`
-
-        // 4. Download Media (Disimpan di Memori Sementara)
-        // Kita download sekarang agar user tidak perlu kirim ulang nanti
-        let buffer = mime ? await q.download() : null
-
-        // 5. Simpan ke Global Session
-        global.remoteSwgc[m.sender] = {
-            buffer: buffer,
-            mime: mime,
-            text: textnya,
-            list: groupList,
-            timestamp: Date.now()
-        }
-
-        // 6. Kirim Daftar ke Owner
-        await m.reply(listText)
-
-    } catch (e) {
-        console.error(e)
-        m.reply("Terjadi kesalahan saat mengambil data grup.")
-    }
-}
-break
-case 'swgc': 
-case 'swgrup': 
-case 'statusgc': {
-    // 1. Validasi Keamanan (Hanya Owner/Admin & Harus di Grup)
-    if (!m.isGroup) return m.reply(mess.group)
-    if (!isCreator && !m.isAdmin) return m.reply(mess.admin)
-    if (!isLimit) return m.reply(mess.limit)
-
-    // 2. Tentukan Konten (Teks dari argumen atau dari pesan yang di-reply)
-    let cap = text ? text : (m.quoted && m.quoted.text ? m.quoted.text : '')
-    let q = m.quoted ? m.quoted : m
-    let mime = (q.msg || q).mimetype || ''
-
-    try {
-        await m.react("⏳") // Reaksi loading khas Sky Bot
-
-        let payload = {}
-
-        if (/image/.test(mime)) {
-            // Jika konten berupa Gambar
-            let buffer = await q.download()
-            if (!buffer) return m.reply("Gagal mengunduh gambar.")
-            payload = {
-                image: buffer,
-                caption: cap
-            }
-        } else if (/video/.test(mime)) {
-            // Jika konten berupa Video
-            let buffer = await q.download()
-            if (!buffer) return m.reply("Gagal mengunduh video.")
-            payload = {
-                video: buffer,
-                caption: cap
-            }
-        } else if (/audio/.test(mime)) {
-            // Jika konten berupa Audio (dikonversi ke format story)
-            let buffer = await q.download()
-            if (!buffer) return m.reply("Gagal mengunduh audio.")
-            payload = {
-                audio: buffer,
-                mimetype: 'audio/mp4', // Standar story WA
-                ptt: true
-            }
-        } else if (cap) {
-            // Jika hanya berupa Teks
-            payload = {
-                text: cap
-            }
-        } else {
-            return m.reply(`Kirim/Reply media atau teks dengan perintah *${prefix + command}*`)
-        }
-
-        // 3. Eksekusi Pengiriman ke Status Grup
-        // Fungsi 'sendGroupStatus' dipanggil dari objek bot 'zhar'
-        await zhar.sendGroupStatus(m.chat, payload)
-
-        await m.react("✅")
-        m.reply("Berhasil mengunggah status ke grup ini! 🚀")
-        setLimit(m, db) // Kurangi limit setelah sukses
-
-    } catch (e) {
-        console.error(e)
-        await m.react("❌")
-        m.reply(`Gagal mengirim status grup: ${e.message}`)
-    }
-}
-break
-                
-            case 'anime': case 'anime1': case 'anime2': case 'anime3': case 'anime4': case 'anime5': case 'anime6': {
+			case 'anime': case 'anime1': case 'anime2': case 'anime3': case 'anime4': case 'anime5': case 'anime6': {
 				if (!isLimit) return m.reply(mess.limit)
 
 				// --- DATA STYLE ---
@@ -1470,20 +1654,20 @@ break
 					// 2. Polling Result (Cek status berulang kali)
 					let output = null
 					let attempts = 0
-					
+
 					while (attempts < 20) { // Maksimal 20x cek (sekitar 1 menit)
 						let res = await fetch("https://aienhancer.ai/api/v1/r/image-enhance/result", {
 							method: "POST",
 							headers,
 							body: JSON.stringify({ task_id: taskId })
 						})
-						
+
 						let json = await res.json()
 						if (json?.data?.status === "succeeded") {
 							output = json.data.output
 							break
 						}
-						
+
 						// Jika gagal/error
 						if (json?.data?.status === "failed") break;
 
@@ -1494,9 +1678,9 @@ break
 					if (!output) return m.reply("❌ Waktu habis atau konversi gagal.")
 
 					// Kirim Hasil
-					await zhar.sendMessage(m.chat, { 
-						image: { url: output }, 
-						caption: `✅ *Sukses convert ke ${style}*` 
+					await zhar.sendMessage(m.chat, {
+						image: { url: output },
+						caption: `✅ *Sukses convert ke ${style}*`
 					}, { quoted: m })
 
 					setLimit(m, db)
@@ -1505,37 +1689,37 @@ break
 					m.reply("Terjadi kesalahan sistem saat konversi.")
 				}
 			}
-			break
-            case 'refresh': case 'updategc': case 'sync': {
-    if (!m.isGroup) return m.reply('Fitur ini hanya untuk di dalam grup!')
-    if (!isCreator && !m.isAdmin) return m.reply('Hanya Admin atau Owner yang bisa menggunakan fitur ini!')
-    
-    try {
-        await m.reply('Sedang menyinkronkan metadata grup dari server WhatsApp...')
-        
-        // 1. Paksa ambil metadata terbaru langsung dari WA (bypass cache)
-        const meta = await zhar.groupMetadata(m.chat)
-        
-        // 2. Timpa data lama di store dengan data baru
-        if (store.groupMetadata) {
-            store.groupMetadata[m.chat] = meta
-        }
-        
-        // 3. Update juga variabel metadata di pesan saat ini agar langsung efek
-        m.metadata = meta
-        
-        // 4. Hitung ulang admin & member untuk konfirmasi
-        const totalMem = meta.participants.length
-        const totalAdmin = meta.participants.filter(v => v.admin).length
-        
-        await m.reply(`Sukses Refresh Metadata! ✅\n\nTotal Member: ${totalMem}\nTotal Admin: ${totalAdmin}`)
-    } catch (e) {
-        console.error(e)
-        m.reply('Gagal mengambil metadata grup!')
-    }
-}
-break
-            
+				break
+			case 'refresh': case 'updategc': case 'sync': {
+				if (!m.isGroup) return m.reply('Fitur ini hanya untuk di dalam grup!')
+				if (!isCreator && !m.isAdmin) return m.reply('Hanya Admin atau Owner yang bisa menggunakan fitur ini!')
+
+				try {
+					await m.reply('Sedang menyinkronkan metadata grup dari server WhatsApp...')
+
+					// 1. Paksa ambil metadata terbaru langsung dari WA (bypass cache)
+					const meta = await zhar.groupMetadata(m.chat)
+
+					// 2. Timpa data lama di store dengan data baru
+					if (store.groupMetadata) {
+						store.groupMetadata[m.chat] = meta
+					}
+
+					// 3. Update juga variabel metadata di pesan saat ini agar langsung efek
+					m.metadata = meta
+
+					// 4. Hitung ulang admin & member untuk konfirmasi
+					const totalMem = meta.participants.length
+					const totalAdmin = meta.participants.filter(v => v.admin).length
+
+					await m.reply(`Sukses Refresh Metadata! ✅\n\nTotal Member: ${totalMem}\nTotal Admin: ${totalAdmin}`)
+				} catch (e) {
+					console.error(e)
+					m.reply('Gagal mengambil metadata grup!')
+				}
+			}
+				break
+
 			case 'fakektp': case 'buatktp': {
 				let t = `╭──❍「 *FAKE KTP GENERATOR* 」❍\n`
 				t += `│ Silahkan *Copy* formulir di bawah,\n`
@@ -1543,12 +1727,12 @@ break
 				t += `│ beserta *Foto Wajah*.\n`
 				t += `│ (Bisa di caption atau reply foto)\n`
 				t += `╰──────❍\n\n`
-				
+
 				// Header Form (Jangan Dihapus karena ini kunci deteksinya)
-				
-				let txt = `🪪 *FORMULIR KTP DIGITAL*\n` 
+
+				let txt = `🪪 *FORMULIR KTP DIGITAL*\n`
 				txt += `⚠️ _Isi data setelah titik dua (:)_\n\n`
-				
+
 				txt += `Provinsi : \n`
 				txt += `Kota : \n`
 				txt += `NIK : \n`
@@ -1565,14 +1749,14 @@ break
 				m.reply(t);
 				m.reply(txt)
 			}
-			break
+				break
 			case 'listproxy': {
 				m.reply(mess.wait)
 				try {
 					// 1. Ambil data dari API
 					let res = await fetch('https://api.nekolabs.web.id/tls/free-proxy')
 					let json = await res.json()
-					
+
 					if (!json.success || !json.result) return m.reply('❌ Gagal mengambil data server.')
 
 					// 2. Filter & Ambil Negara Unik
@@ -1607,10 +1791,10 @@ break
 						let code = countryMap.get(country);
 						// Auto convert kode negara (ID) ke Emoji Bendera (🇮🇩)
 						let flag = code ? code.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397)) : '🏳️';
-						
+
 						txt += `│${setv} ${flag} ${country}\n`
 					}
-					
+
 					txt += `╰──────❍\n\n`
 					txt += `_Gunakan ${prefix}proxy <nama_negara> untuk mengambil IP-nya_`
 
@@ -1621,7 +1805,7 @@ break
 					m.reply('Terjadi kesalahan saat memuat list negara.')
 				}
 			}
-			break
+				break
 			case 'proxy': case 'freeproxy': {
 				if (!isLimit) return m.reply(mess.limit)
 				m.reply(mess.wait)
@@ -1629,12 +1813,12 @@ break
 					// 1. Ambil data API
 					let res = await fetch('https://api.nekolabs.web.id/tls/free-proxy')
 					let json = await res.json()
-					
+
 					if (!json.success || !json.result) return m.reply('Gagal mengambil data proxy.')
 
 					// 2. Bersihkan data (Hapus data sampah yang bukan IP)
 					let validProxies = json.result.filter(v => /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(v.ip))
-					
+
 					if (validProxies.length === 0) return m.reply('Tidak ada proxy valid ditemukan saat ini.')
 
 					// 3. Cek Argumen User (text)
@@ -1642,7 +1826,7 @@ break
 						// --- MODE PENCARIAN NEGARA ---
 						// Cari proxy yang negaranya mengandung kata kunci user (Case Insensitive)
 						let countryProxies = validProxies.filter(p => p.country.toLowerCase().includes(text.toLowerCase()))
-						
+
 						if (countryProxies.length === 0) {
 							// Jika negara tidak ditemukan di list hasil scan
 							let availableCountries = [...new Set(validProxies.map(p => p.country))].filter(c => c && c !== 'Unknown').sort()
@@ -1651,16 +1835,16 @@ break
 
 						// Tampilkan hasil (Batasi 50 agar tidak spam)
 						let limitShow = countryProxies.slice(0, 50)
-						
+
 						let txt = `*🔎 PROXY LIST: ${text.toUpperCase()}*\n`
 						txt += `*Ditemukan:* ${countryProxies.length}\n`
 						txt += `*Ditampilkan:* ${limitShow.length}\n\n`
-						
+
 						for (let i of limitShow) {
 							let flag = i.code ? i.code.toLowerCase() : '🏳️';
 							// Konversi kode negara ke emoji bendera
-							try { flag = i.code.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397)) } catch {}
-							
+							try { flag = i.code.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397)) } catch { }
+
 							txt += `🌍 *${i.country}* ${flag}\n`
 							txt += `🔹 IP: ${i.ip}\n`
 							txt += `🔹 Port: ${i.port}\n`
@@ -1674,226 +1858,225 @@ break
 						// --- MODE LIST NEGARA (Jika tidak ada argumen) ---
 						// Ambil daftar negara unik yang tersedia
 						let countries = [...new Set(validProxies.map(p => p.country))].filter(c => c && c !== 'Unknown').sort()
-						
+
 						let txt = `*🔎 DAFTAR NEGARA PROXY*\n`
 						txt += `Total Negara Tersedia: ${countries.length}\n\n`
 						txt += `*Cara Pakai:*\nKetik ${prefix + command} <nama_negara>\nContoh: *${prefix + command} indonesia*\n\n`
 						txt += `*List Negara:*\n`
 						txt += countries.map(c => `▫️ ${c}`).join('\n')
-						
+
 						m.reply(txt)
 					}
-					
+
 					setLimit(m, db)
 				} catch (e) {
 					console.error(e)
 					m.reply('Terjadi kesalahan saat mengambil data proxy.')
 				}
 			}
-			break
+				break
 			case 'debug': case 'raw': case 'getraw': {
-                if (!isCreator) return m.reply(mess.owner) // Keamanan: Hanya owner
+				if (!isCreator) return m.reply(mess.owner) // Keamanan: Hanya owner
 
-                let targetObj;
-                
-                if (m.quoted) {
-                    // Logika 1: Jika me-reply pesan, ambil raw object pesan tersebut
-                    // 'fakeObj' biasanya properti dari serialize yang berisi raw WebMessageInfo
-                    targetObj = m.quoted.fakeObj || m.quoted;
-                } else {
-                    // Logika 2: Jika tidak me-reply, ambil raw object dari pesan command ini sendiri
-                    // 'msg' adalah parameter raw yang diterima di fungsi utama handler
-                    targetObj = msg;
-                }
+				let targetObj;
 
-                // Format JSON agar rapi dan mudah dibaca (Pretty Print)
-                // Menggunakan JSON.stringify(obj, replacer, space)
-                let output = JSON.stringify(targetObj, null, 2);
+				if (m.quoted) {
+					// Logika 1: Jika me-reply pesan, ambil raw object pesan tersebut
+					// 'fakeObj' biasanya properti dari serialize yang berisi raw WebMessageInfo
+					targetObj = m.quoted.fakeObj || m.quoted;
+				} else {
+					// Logika 2: Jika tidak me-reply, ambil raw object dari pesan command ini sendiri
+					// 'msg' adalah parameter raw yang diterima di fungsi utama handler
+					targetObj = msg;
+				}
 
-                // Kirim hasil log
-                m.reply(output);
-            }
-            break
+				// Format JSON agar rapi dan mudah dibaca (Pretty Print)
+				// Menggunakan JSON.stringify(obj, replacer, space)
+				let output = JSON.stringify(targetObj, null, 2);
+
+				// Kirim hasil log
+				m.reply(output);
+			}
+				break
 			case 'getprofile': {
-                let userJid = m.sender; // Default ke pengirim pesan
-                let targetName = m.pushName; // Default ke nama pengirim
+				let userJid = m.sender; // Default ke pengirim pesan
+				let targetName = m.pushName; // Default ke nama pengirim
 
-                // Cek jika ada yang ditandai (mentioned)
-                if (m.mentionedJid && m.mentionedJid[0]) {
-                    userJid = m.mentionedJid[0];
-                }
-                // Cek jika ada pesan yang dikutip
-                else if (m.quoted && m.quoted.sender) {
-                    userJid = m.quoted.sender;
-                }
+				// Cek jika ada yang ditandai (mentioned)
+				if (m.mentionedJid && m.mentionedJid[0]) {
+					userJid = m.mentionedJid[0];
+				}
+				// Cek jika ada pesan yang dikutip
+				else if (m.quoted && m.quoted.sender) {
+					userJid = m.quoted.sender;
+				}
 
-                try {
-                    // --- PERBAIKAN LOGIKA DATA KONTAK ---
-                    // Ambil data kontak dari 'store' atau 'zhar.contacts' dengan aman
-                    // Menggunakan optional chaining (?.) agar tidak error jika undefined
-                    let contactData = store?.contacts?.[userJid] || zhar?.contacts?.[userJid] || {};
+				try {
+					// --- PERBAIKAN LOGIKA DATA KONTAK ---
+					// Ambil data kontak dari 'store' atau 'zhar.contacts' dengan aman
+					// Menggunakan optional chaining (?.) agar tidak error jika undefined
+					let contactData = store?.contacts?.[userJid] || zhar?.contacts?.[userJid] || {};
 
-                    // Dapatkan nama pengguna
-                    targetName = (contactData.name || contactData.verifiedName || (await zhar.getName(userJid)) || targetName || 'Tidak Diketahui').trim();
+					// Dapatkan nama pengguna
+					targetName = (contactData.name || contactData.verifiedName || (await zhar.getName(userJid)) || targetName || 'Tidak Diketahui').trim();
 
-                    // --- LOGIKA UNTUK LID (Link Identifier) ---
-                    let userLid = 'Tidak diketahui';
-                    
-                    // Cek LID di data kontak
-                    if (contactData.lid) {
-                        userLid = contactData.lid;
-                    } 
-                    // Jika tidak ada, coba cek di cache pesan store
-                    else if (store?.messages?.[userJid]?.lid) {
-                         userLid = store.messages[userJid].lid;
-                    }
-                    // ---------------------------------
+					// --- LOGIKA UNTUK LID (Link Identifier) ---
+					let userLid = 'Tidak diketahui';
 
-                    let ppUrl;
-                    try {
-                        // Dapatkan URL foto profil
-                        ppUrl = await zhar.profilePictureUrl(userJid, 'image');
-                    } catch (e) {
-                        // Jika tidak ada foto profil atau gagal, gunakan default
-                        ppUrl = 'https://i.ibb.co/3xQy2Cg/avatar-contact.png';
-                    }
+					// Cek LID di data kontak
+					if (contactData.lid) {
+						userLid = contactData.lid;
+					}
+					// Jika tidak ada, coba cek di cache pesan store
+					else if (store?.messages?.[userJid]?.lid) {
+						userLid = store.messages[userJid].lid;
+					}
+					// ---------------------------------
 
-                    let statusInfo;
-                    try {
-                        // Dapatkan status (bio) pengguna
-                        statusInfo = await zhar.fetchStatus(userJid);
-                    } catch (e) {
-                        statusInfo = { status: 'Tidak ada status atau tidak dapat diakses.' };
-                    }
+					let ppUrl;
+					try {
+						// Dapatkan URL foto profil
+						ppUrl = await zhar.profilePictureUrl(userJid, 'image');
+					} catch (e) {
+						// Jika tidak ada foto profil atau gagal, gunakan default
+						ppUrl = 'https://i.ibb.co/3xQy2Cg/avatar-contact.png';
+					}
 
-                    let profileText = `*─「 PROFIL PENGGUNA 」─*\n\n`;
-                    profileText += `*Nama:* ${targetName}\n`;
-                    profileText += `*Nomor:* ${userJid.split('@')[0]}\n`;
-                    profileText += `*Lid:* ${userLid}\n`; 
-                    profileText += `*Status:* ${statusInfo.status || 'Tidak ada status'}\n`;
-                    profileText += `*Bio Waktu:* ${statusInfo.setAt ? new Date(statusInfo.setAt * 1000).toLocaleString() : 'Tidak diketahui'}\n`;
+					let statusInfo;
+					try {
+						// Dapatkan status (bio) pengguna
+						statusInfo = await zhar.fetchStatus(userJid);
+					} catch (e) {
+						statusInfo = { status: 'Tidak ada status atau tidak dapat diakses.' };
+					}
 
-                    // Kirim foto profil beserta teks informasi
-                    if (ppUrl) {
-                        await zhar.sendMedia(m.chat, ppUrl, '', profileText, m, { caption: profileText });
-                    } else {
-                        await m.reply(profileText);
-                    }
+					let profileText = `*─「 PROFIL PENGGUNA 」─*\n\n`;
+					profileText += `*Nama:* ${targetName}\n`;
+					profileText += `*Nomor:* ${userJid.split('@')[0]}\n`;
+					profileText += `*Lid:* ${userLid}\n`;
+					profileText += `*Status:* ${statusInfo.status || 'Tidak ada status'}\n`;
+					profileText += `*Bio Waktu:* ${statusInfo.setAt ? new Date(statusInfo.setAt * 1000).toLocaleString() : 'Tidak diketahui'}\n`;
 
-                } catch (e) {
-                    console.error("Error getting profile:", e);
-                    await m.reply("Terjadi kesalahan saat mengambil profil.");
-                }
-            }
-            break
+					// Kirim foto profil beserta teks informasi
+					if (ppUrl) {
+						await zhar.sendMedia(m.chat, ppUrl, '', profileText, m, { caption: profileText });
+					} else {
+						await m.reply(profileText);
+					}
+
+				} catch (e) {
+					console.error("Error getting profile:", e);
+					await m.reply("Terjadi kesalahan saat mengambil profil.");
+				}
+			}
+				break
 			case "chstalk": case 'saluranstalk': case 'intipsaluran': case 'intipch':
-    case "cekch": case 'infoch': case 'infochanel':
-        {
-          if (!isLimit) return m.reply(mess.limit);
-          if (!text)
-            return m.reply(
-              `Example: ${
-                prefix + command
-              } https://whatsapp.com/channel/0000000000000000000000`
-            );
-          let _saluran = /whatsapp\.com\/channel\/([\w\d]*)/;
-          let channelIdMatch = text.match(_saluran);
+			case "cekch": case 'infoch': case 'infochanel':
+				{
+					if (!isLimit) return m.reply(mess.limit);
+					if (!text)
+						return m.reply(
+							`Example: ${prefix + command
+							} https://whatsapp.com/channel/0000000000000000000000`
+						);
+					let _saluran = /whatsapp\.com\/channel\/([\w\d]*)/;
+					let channelIdMatch = text.match(_saluran);
 
-          if (!channelIdMatch) {
-            return m.reply(
-              "Link Channel WhatsApp tidak valid! Pastikan format link benar."
-            );
-          }
+					if (!channelIdMatch) {
+						return m.reply(
+							"Link Channel WhatsApp tidak valid! Pastikan format link benar."
+						);
+					}
 
-          const channelId = channelIdMatch[1]; // Cukup ambil ID alfanumeriknya saja
+					const channelId = channelIdMatch[1]; // Cukup ambil ID alfanumeriknya saja
 
-          console.log(
-            `[DEBUG] Channel ID yang akan dicari (revisi): ${channelId}`
-          );
-          m.reply(mess.wait);
-          try {
-            const n = await zhar.newsletterMsg(channelId);
-            console.log(`[DEBUG] Hasil dari newsletterMsg (n) (revisi):`, n);
+					console.log(
+						`[DEBUG] Channel ID yang akan dicari (revisi): ${channelId}`
+					);
+					m.reply(mess.wait);
+					try {
+						const n = await zhar.newsletterMsg(channelId);
+						console.log(`[DEBUG] Hasil dari newsletterMsg (n) (revisi):`, n);
 
-            if (n && n.thread_metadata) {
-              const channelName = n.thread_metadata.name.text;
-              const subscriberCount = n.thread_metadata.subscribers_count;
-              const idChannel = n.id; // Ini akan menjadi JID lengkap channel (dengan @newsletter)
-              const channelDescription =
-                n.thread_metadata.description?.text || "Tidak ada deskripsi.";
-              const creationTime = new Date(
-                n.thread_metadata.creation_time * 1000
-              ).toLocaleString("id-ID"); // Konversi dari detik ke ms
+						if (n && n.thread_metadata) {
+							const channelName = n.thread_metadata.name.text;
+							const subscriberCount = n.thread_metadata.subscribers_count;
+							const idChannel = n.id; // Ini akan menjadi JID lengkap channel (dengan @newsletter)
+							const channelDescription =
+								n.thread_metadata.description?.text || "Tidak ada deskripsi.";
+							const creationTime = new Date(
+								n.thread_metadata.creation_time * 1000
+							).toLocaleString("id-ID"); // Konversi dari detik ke ms
 
-              // Mendapatkan URL gambar profil
-              const host = n.thread_metadata.host;
-              const directPath = n.thread_metadata.preview?.direct_path;
-              let imageUrl = null;
+							// Mendapatkan URL gambar profil
+							const host = n.thread_metadata.host;
+							const directPath = n.thread_metadata.preview?.direct_path;
+							let imageUrl = null;
 
-              if (host && directPath) {
-                imageUrl = host + directPath;
-              }
+							if (host && directPath) {
+								imageUrl = host + directPath;
+							}
 
-              // Membangun teks utama untuk pesan
-              let replyTextContent =
-                `*[ INFORMATION CHANNEL ]*\n\n` +
-                `*📚 Nama Channel:* ${channelName}\n` +
-                `*🆔 ID Channel:* ${idChannel}\n` +
-                `*👥 Jumlah Subscriber:* ${subscriberCount.toLocaleString(
-                  "id-ID"
-                )}\n` +
-                `*📝 Deskripsi:* \n${channelDescription}\n\n\n` +
-                `*🗓️ Dibuat Pada:* ${creationTime}\n> by: ${botname}`;
+							// Membangun teks utama untuk pesan
+							let replyTextContent =
+								`*[ INFORMATION CHANNEL ]*\n\n` +
+								`*📚 Nama Channel:* ${channelName}\n` +
+								`*🆔 ID Channel:* ${idChannel}\n` +
+								`*👥 Jumlah Subscriber:* ${subscriberCount.toLocaleString(
+									"id-ID"
+								)}\n` +
+								`*📝 Deskripsi:* \n${channelDescription}\n\n\n` +
+								`*🗓️ Dibuat Pada:* ${creationTime}\n> by: ${botname}`;
 
-              // Membuat tombol "COPY ID CHANNEL" dengan format yang didukung
-              const buttons = [
-                {
-                  buttonId: `${prefix}copy ${idChannel}`, // ID yang akan dikirim bot ketika tombol ditekan
-                  buttonText: { displayText: "COPY ID CHANNEL" },
-                  type: 1, // Tipe tombol "reply"
-                },
-                {
-                  buttonId: `${prefix}copy ${channelDescription}`, // ID yang akan dikirim bot ketika tombol ditekan
-                  buttonText: { displayText: "COPY DESKRIPSI" },
-                  type: 1, // Tipe tombol "reply"
-                },
-              ];
+							// Membuat tombol "COPY ID CHANNEL" dengan format yang didukung
+							const buttons = [
+								{
+									buttonId: `${prefix}copy ${idChannel}`, // ID yang akan dikirim bot ketika tombol ditekan
+									buttonText: { displayText: "COPY ID CHANNEL" },
+									type: 1, // Tipe tombol "reply"
+								},
+								{
+									buttonId: `${prefix}copy ${channelDescription}`, // ID yang akan dikirim bot ketika tombol ditekan
+									buttonText: { displayText: "COPY DESKRIPSI" },
+									type: 1, // Tipe tombol "reply"
+								},
+							];
 
-              // Konten untuk sendButtonMsg
-              const content = {
-                text: replyTextContent, // Teks utama pesan
-                footer: `Tekan tombol di bawah untuk menyalin informasi.`, // Teks footer di bawah tombol
-                buttons: buttons,
-                // Jika ada gambar, tambahkan objek image ke dalam content
-                ...(imageUrl ? { image: { url: imageUrl } } : {}),
-              };
+							// Konten untuk sendButtonMsg
+							const content = {
+								text: replyTextContent, // Teks utama pesan
+								footer: `Tekan tombol di bawah untuk menyalin informasi.`, // Teks footer di bawah tombol
+								buttons: buttons,
+								// Jika ada gambar, tambahkan objek image ke dalam content
+								...(imageUrl ? { image: { url: imageUrl } } : {}),
+							};
 
-              // Opsi untuk sendButtonMsg (untuk quoted message)
-              const options = { quoted: m };
+							// Opsi untuk sendButtonMsg (untuk quoted message)
+							const options = { quoted: m };
 
-              await zhar.sendButtonMsg(m.chat, content, options);
-              setLimit(m, db);
-            } else { 
-                m.reply("Tidak dapat menemukan informasi untuk channel ini atau link tidak valid.");
-            }
-          } catch (e) {
-            if (e?.status === 404 || e?.message?.includes("404")) {
-              m.reply("Channel WhatsApp tidak ditemukan atau link tidak valid.");
-            } else {
-              m.reply("Terjadi kesalahan saat mengambil informasi channel. Silakan coba lagi.");
-            }
-          }
-        }
-        break
+							await zhar.sendButtonMsg(m.chat, content, options);
+							setLimit(m, db);
+						} else {
+							m.reply("Tidak dapat menemukan informasi untuk channel ini atau link tidak valid.");
+						}
+					} catch (e) {
+						if (e?.status === 404 || e?.message?.includes("404")) {
+							m.reply("Channel WhatsApp tidak ditemukan atau link tidak valid.");
+						} else {
+							m.reply("Terjadi kesalahan saat mengambil informasi channel. Silakan coba lagi.");
+						}
+					}
+				}
+				break
 
-      case "copy":
-        {
-          if (!text) {
-            return m.reply(`Example: ${prefix + command} Hello World!`);
-          }
-          await m.reply(text);
-        }
-        break
+			case "copy":
+				{
+					if (!text) {
+						return m.reply(`Example: ${prefix + command} Hello World!`);
+					}
+					await m.reply(text);
+				}
+				break
     case 'ffstalk':
 case 'ffstalker': {
     if (!isLimit) return m.reply(mess.limit); // Cek limit pengguna
@@ -2498,6 +2681,10 @@ case 'coba': {
 				})
 			}
 			break
+
+case 'reactv2':{
+m.react('test');
+} break
 case '19rujxl1e': {
 				console.log('.')
 			}
@@ -3912,13 +4099,14 @@ case '19rujxl1e': {
 
 					// 3. Tentukan Size (Default: Medium)
 					let inputSize = args[0] ? args[0].toLowerCase() : 'medium'
-					let validSizes = ['low', 'medium', 'high']
+					let validSizes = ['4', '8', '16']
 					
 					// Jika input user tidak valid (atau kosong), paksa jadi 'medium'
 					let size = validSizes.includes(inputSize) ? inputSize : 'medium'
 
 					// 4. Panggil API Ihancer
-					let res = await fetch(`https://api.nekolabs.web.id/tls/upscale/ihancer?imageUrl=${encodeURIComponent(upload.url)}&size=${size}`)
+					//let res = await fetch(`https://api.nekolabs.web.id/tls/upscale/ihancer?imageUrl=${encodeURIComponent(upload.url)}&size=${size}`)
+					let res = await fetch(`https://api.nexray.web.id/tools/enhancer?url=${encodeURIComponent(upload.url)}%2F&resolusi=${size}`)
 					let json = await res.json()
 
 					if (!json.success || !json.result) return m.reply('❌ Gagal menjernihkan gambar.')
@@ -3992,7 +4180,7 @@ case '19rujxl1e': {
 					if (!upload || !upload.url) return m.reply('Gagal mengupload gambar ke server sementara.')
 
 					// 4. Panggil API Upscale
-					let res = await fetch(`https://api.nekolabs.web.id/tls/upscale/supawork?imageUrl=${encodeURIComponent(upload.url)}&scale=${scale}`)
+					let res = await fetch(`https://api.nexray.web.id/tools/enhancer?url=${encodeURIComponent(upload.url)}%2F&resolusi=${scale}`)
 					let json = await res.json()
 
 					if (!json.success || !json.result) return m.reply('❌ Gagal melakukan upscale gambar. Coba scale yang lebih kecil.')
@@ -6498,6 +6686,9 @@ case '19rujxl1e': {
 					await m.reply(String(err))
 				}
 			}
+			if (budy.startsWith('sapa')) {
+				return zhar.sendFromOwner(sw, `hai test`)
+			}
 			if (budy.startsWith('$')) {
 				if (!isCreator) return
 				if (!text) return
@@ -6544,7 +6735,7 @@ case '19rujxl1e': {
 		if (errorCache[errorKey].length >= 3) return;
 		errorCache[errorKey].push(now);
 		m.reply('Error: ' + (e?.name || e?.code || e?.output?.statusCode || e?.status || 'Tidak diketahui') + '\nLog Error Telah dikirim ke Owner\n\n')
-		return zhar.sendFromOwner(ownerNumber, `Halo sayang, sepertinya ada yang error nih, jangan lupa diperbaiki ya\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
+		return zhar.sendFromOwner(sw, `Halo sayang, sepertinya ada yang error nih, jangan lupa diperbaiki ya\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
 	}
 }
 

@@ -129,11 +129,18 @@ async function startzharBot() {
 	const zhar = WAConnection({
 		logger: level,
 		getMessage,
-		syncFullHistory: true,
+		syncFullHistory: true, // Hati-hati ini berat, baca penjelasan di bawah
 		maxMsgRetryCount: 15,
 		msgRetryCounterCache,
 		retryRequestDelayMs: 10,
-		defaultQueryTimeoutMs: 0,
+		
+		// --- PERBAIKAN DI SINI ---
+		// defaultQueryTimeoutMs: 0, // JANGAN 0 (Infinity), ganti ke waktu wajar agar kalau macet dia restart
+		defaultQueryTimeoutMs: 60000, // 1 menit
+		
+		// Tambahkan ini agar koneksi tidak diputus server saat diam lama
+		keepAliveIntervalMs: 30000, 
+		
 		connectTimeoutMs: 60000,
 		browser: Browsers.ubuntu('Chrome'),
 		generateHighQualityLinkPreview: true,
