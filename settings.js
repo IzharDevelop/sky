@@ -18,7 +18,7 @@ global.sw = ['6285852536578']
 */
 global.listprefix = ['+','!','.']
 global.listv = ['•','●','■','✿','▲','➩','➢','➣','➤','✦','✧','△','❀','○','□','♤','♡','◇','♧','々','〆']
-global.tempatDB = 'mongodb+srv://develop:Abul~Basar132@cluster0.58zkxb8.mongodb.net/?appName=Cluster0' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
+global.tempatDB = 'database.json' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
 global.tempatStore = 'baileys_store.json' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
 global.pairing_code = true
 global.fake = {
